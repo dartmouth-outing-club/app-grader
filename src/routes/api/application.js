@@ -1,10 +1,20 @@
 import { getApplication } from '../../google'
 
-export async function get(event) {
-	const sheet = await getApplication()
+const ERROR_RES = {
+	status: 500,
+	error: 'Internal Server Error',
+	message: 'Sorry, please try again'
+}
+
+export async function get() {
+	const application = await getApplication()
+
+	if (!application) {
+		return ERROR_RES
+	}
 
 	return {
-		body: JSON.stringify(sheet),
+		body: JSON.stringify(application),
 		headers: {
 			'Content-Type': 'application/json'
 		}
