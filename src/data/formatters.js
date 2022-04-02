@@ -1,8 +1,6 @@
-import { sheets_v4 } from 'googleapis'
 import fs from 'fs'
 import path from 'path'
 
-type Sheet = sheets_v4.Schema$Sheet
 const CONFIG_ROUTE = path.join(process.cwd(), 'app-config.json')
 
 const data = fs.readFileSync(CONFIG_ROUTE)
@@ -26,9 +24,9 @@ export function getPrompts() {
 	return config.map((value) => value.prompt)
 }
 
-export function getHeaders(sheet: Sheet) {
+export function getHeaders(sheet) {
 	// Get the first row from the rowData
-	let headerRow: sheets_v4.Schema$RowData
+	let headerRow
 	try {
 		headerRow = sheet.data[0].rowData[0]
 	} catch (error) {
@@ -45,9 +43,9 @@ export function getHeaders(sheet: Sheet) {
 	return headers
 }
 
-export function getRandomApp(sheet: Sheet) {
+export function getRandomApp(sheet) {
 	// Get the first row from the rowData
-	let row: sheets_v4.Schema$RowData
+	let row
 	try {
 		const rowData = sheet.data[0].rowData
 		// Get any random row except for the first one

@@ -4,7 +4,7 @@ A small webapp that pull applications from a google sheet and gives people the a
 
 ## Config format
 
-To run the app, create a JSON config file with the following information.
+To run the app, create a JSON config file with the following information. This file should be saved as `app-config.json` in the source/build root directory.
 
 ```json
 [

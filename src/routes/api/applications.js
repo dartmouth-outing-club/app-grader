@@ -13,8 +13,13 @@ export async function get() {
 		return ERROR_RES
 	}
 
+	const body = {
+		application,
+		secondsRemaining: 1200
+	}
+
 	return {
-		body: JSON.stringify(application),
+		body: JSON.stringify(body),
 		headers: {
 			'Content-Type': 'application/json'
 		}
