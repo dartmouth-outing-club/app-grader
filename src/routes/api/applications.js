@@ -1,9 +1,9 @@
-import { getApplication } from '../../google'
+import { getApplication } from '../../functions/google'
 
 const ERROR_RES = {
 	status: 500,
 	error: 'Internal Server Error',
-	message: 'Sorry, please try again'
+	message: 'Sorry, please try again later.'
 }
 
 export async function get() {

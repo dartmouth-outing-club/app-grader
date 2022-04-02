@@ -3,27 +3,42 @@ import path from 'path'
 
 const CONFIG_ROUTE = path.join(process.cwd(), 'app-config.json')
 
+// Read in the config file on module load
 const data = fs.readFileSync(CONFIG_ROUTE)
 const config = JSON.parse(data.toString())
 
 // Map the letter of the config file to the index of the array
-// Note the minus one since the function outputs A = 1
-const indices = config.map((value) => letterToColumn(value.column) - 1)
+const indices = config.map((item) => columnLetterToArrayIndex(item.column))
 
-// https://stackoverflow.com/questions/21229180/convert-column-index-into-corresponding-column-letter/21231012#21231012
-function letterToColumn(letter) {
+/**
+ * Conver the letter of a sheet column (i.e. "D" or "AC") to its array index.
+ * For example: "C" -> 2
+ * @param {string} letter
+ * @returns the array index at which that column can be found
+ */
+function columnLetterToArrayIndex(letter) {
+	// https://stackoverflow.com/questions/21229180/convert-column-index-into-corresponding-column-letter/21231012#21231012
 	var column = 0,
 		length = letter.length
 	for (var i = 0; i < length; i++) {
 		column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1)
 	}
-	return column
+	return column - 1
 }
 
+/** Get the the application questions from the config file */
 export function getPrompts() {
-	return config.map((value) => value.prompt)
+	return config.map((item) => item.prompt)
 }
 
+/**
+ * Get the headers from the sheet, based on the columns in the config file.
+ * We're not using this right now, since the headers on the sheet could be something like "Question 1",
+ * hence the config file, but I already wrote it so...
+ *
+ * @param sheet a single sheet from a Google Sheets V4 API
+ * @returns the first row (headers) of the columns denoted in the config file
+ */
 export function getHeaders(sheet) {
 	// Get the first row from the rowData
 	let headerRow
@@ -43,6 +58,14 @@ export function getHeaders(sheet) {
 	return headers
 }
 
+/**
+ * Retrieve a single application from the sheet in [{question, answer}] form.
+ * The question corresponds to the "question" in the config file;
+ * the answer is the answer for that header.
+ *
+ * @param sheet a single sheet from a Google Sheets V4 API
+ * @returns a single set of answers to the application questions
+ */
 export function getRandomApp(sheet) {
 	// Get the first row from the rowData
 	let row
