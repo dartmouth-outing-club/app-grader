@@ -22,6 +22,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"googleapis": "^99.0.0"
+		"googleapis": "^99.0.0",
+		"redis": "^4.0.6"
 	}
 }

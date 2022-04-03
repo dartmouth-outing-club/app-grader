@@ -1,7 +1,18 @@
 <script>
-	import { onDestroy } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 
-	let application, secondsRemaining, counter
+	let application, counter
+	let secondsRemaining = 0
+
+	onMount(() => {
+		counter = setInterval(() => {
+			secondsRemaining -= 1
+		}, 1000)
+	})
+
+	onDestroy(() => {
+		clearInterval(counter)
+	})
 
 	const fetchNextApp = async () => {
 		// Fetch the application from the backend
@@ -11,14 +22,7 @@
 
 		// Decrement the seconds-remaining counter every second
 		secondsRemaining = sheetData.secondsRemaining
-		counter = setInterval(() => {
-			secondsRemaining -= 1
-		}, 1000)
 	}
-
-	onDestroy(() => {
-		clearInterval(counter)
-	})
 </script>
 
 <h1>DOC Trips Application Grader</h1>
@@ -32,6 +36,7 @@
 		recoginize the applicant based on what they wrote, please click the "skip" button to move on to
 		the next application.
 	</p>
+	<button on:click={fetchNextApp}>{application ? 'Pass' : 'Get Application'}</button>
 	{#if application}
 		<h3>Time remaining</h3>
 		<p>You have {secondsRemaining} seconds remaining</p>
@@ -42,8 +47,6 @@
 				<p>{appField.response}</p>
 			{/each}
 		</div>
-	{:else}
-		<button on:click={fetchNextApp}>Get Application</button>
 	{/if}
 </div>
 

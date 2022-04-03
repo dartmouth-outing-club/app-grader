@@ -1,4 +1,5 @@
-import { getApplication } from '../../functions/google'
+import { getApplication } from '../../modules/google'
+import { getOrCheckoutApp } from '../../modules/redis'
 
 const ERROR_RES = {
 	status: 500,
@@ -6,15 +7,19 @@ const ERROR_RES = {
 	message: 'Sorry, please try again later.'
 }
 
-export async function get() {
-	const application = await getApplication()
+export async function get({ clientAddress }) {
+	const { applicationId, fields } = await getApplication()
 
-	if (!application) {
+	if (!applicationId) {
 		return ERROR_RES
 	}
 
+	await getOrCheckoutApp(applicationId, clientAddress)
+
+	console.log(`Serving application ${applicationId} to ${clientAddress}`)
+
 	const body = {
-		application,
+		application: fields,
 		secondsRemaining: 1200
 	}
 

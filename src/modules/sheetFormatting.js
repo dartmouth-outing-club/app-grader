@@ -69,19 +69,27 @@ export function getHeaders(sheet) {
 export function getRandomApp(sheet) {
 	// Get the first row from the rowData
 	let row
+	let rowNum
 	try {
 		const rowData = sheet.data[0].rowData
 		// Get any random row except for the first one
-		row = rowData[Math.floor(Math.random() * (rowData.length - 1)) + 1]
+		rowNum = Math.floor(Math.random() * (rowData.length - 1)) + 1
+		row = rowData[rowNum]
 	} catch (error) {
 		console.error(error)
 		throw 'Unable to get a random application response'
 	}
 
 	// Get the fields specified in the config file
-	const fields = row.values
-		.filter((value, index) => indices.includes(index))
-		.map((column) => column.userEnteredValue?.stringValue || '')
-		.map((value) => value.trim())
-	return fields
+	const responses = indices
+		.map((index) => row.values[index]) // Get the value each index (might be undefined)
+		.map((column) => column?.userEnteredValue?.stringValue || '') // Get the string in each value
+		.map((value) => value.trim()) // Trim the whitespace
+
+	console.log(responses)
+
+	return {
+		responses,
+		applicationId: rowNum
+	}
 }

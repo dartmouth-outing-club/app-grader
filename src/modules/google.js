@@ -2,8 +2,9 @@ import path from 'path'
 import { google } from 'googleapis'
 import { getPrompts, getRandomApp } from './sheetFormatting'
 
-const APPLICATIONS_SHEET_ID = '1PSSCaNH5eSvloLrKVxnSfm9V9tTmulY5qsgpXjUOToU'
+const APPLICATIONS_SHEET_ID = '1uOdJTKmFk6xTREViX7-TGcP0CJvg2WWLqhwbzyJBbXg'
 const SPREADSHEET_AUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
+const APPLICATIONS_SHEET_TITLE = 'Applicants'
 
 // Store current authenticated accessor in the module
 let sheets
@@ -43,7 +44,11 @@ export async function getApplication(retry = true) {
 			spreadsheetId: APPLICATIONS_SHEET_ID,
 			includeGridData: true
 		})
-		applicationsSheet = res.data.sheets[0]
+
+		// Get the sheet with the applicants
+		applicationsSheet = res.data.sheets.find(
+			(sheet) => sheet.properties.title === APPLICATIONS_SHEET_TITLE
+		)
 	} catch (error) {
 		if (error?.response?.status === 401) {
 			// Attempt to re-authenticate if the arror was auth related
@@ -64,8 +69,13 @@ export async function getApplication(retry = true) {
 
 	// Get the questions and a single response
 	const questions = getPrompts()
-	const responses = getRandomApp(applicationsSheet)
+	const { responses, applicationId } = getRandomApp(applicationsSheet)
 
-	// Return array of { question, response } objects
-	return questions.map((question, index) => ({ question, response: responses[index] }))
+	// Create array of { question, response } objects
+	const fields = questions.map((question, index) => ({ question, response: responses[index] }))
+
+	return {
+		fields,
+		applicationId
+	}
 }
