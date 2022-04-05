@@ -6,7 +6,7 @@ const APPLICATIONS_SHEET_ID = '1uOdJTKmFk6xTREViX7-TGcP0CJvg2WWLqhwbzyJBbXg'
 const SPREADSHEET_AUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
 const APPLICATIONS_SHEET_TITLE = 'Applicants'
 
-// Store current authenticated accessor in the module
+// Store current authenticated accessor in the module. This gets created once, on import.
 let sheets
 
 function sleepSeconds(seconds) {
@@ -25,6 +25,42 @@ async function setToken() {
 		version: 'v4',
 		auth: client
 	})
+}
+
+/**
+ * Return a function that will attempt to refresh the OAuth token if it fails.
+ *
+ * Every function that needs to call the Google API will have to authenticate using OAuth.
+ * This function lets us write all the other functions assuming that the `sheets` variable
+ * exists and is authenticated, then ehance those functions with retry and login logic.
+ */
+async function enhanceWithRetries(func, retries) {
+	return async (...params) => {
+		if (!sheets) {
+			await setToken()
+		}
+
+		let triesLeft = retries + 1
+		while (triesLeft > 0) {
+			try {
+				return func(...params)
+			} catch (error) {
+				if (error?.response?.status === 401) {
+					// Attempt to re-authenticate if the arror was auth related
+					console.error('Auth error; attempting to log back in')
+					await setToken()
+				} else {
+					// Otherwise wait 2 seconds and then try again
+					console.error(error)
+					await sleepSeconds(2)
+					console.error('Retrying the call again.')
+				}
+			}
+			triesLeft -= 1
+		}
+
+		throw `Attempting to call ${func} failed ${retries} time(s).`
+	}
 }
 
 /**
@@ -57,36 +93,5 @@ async function getSingleApplication() {
 	}
 }
 
-/**
- * Enhance a function by retrying it a certain number of times,
- * with a login attempt to google if necessary.
- */
-async function enhanceWithRetry(retriesLeft, func, ...params) {
-	if (!sheets) {
-		await setToken()
-	}
-
-	try {
-		return func(...params)
-	} catch (error) {
-		if (error?.response?.status === 401) {
-			// Attempt to re-authenticate if the arror was auth related
-			console.error('Auth error; attempting to log back in')
-			await setToken()
-		} else {
-			// Otherwise wait 2 seconds and then try again
-			console.error(error)
-			await sleepSeconds(2)
-		}
-
-		// Attempt a single retry
-		if (retriesLeft > 0) {
-			return enhanceWithRetry(retriesLeft - 1, func, ...params)
-		}
-		throw `Attempting to call ${func} twice failed`
-	}
-}
-
-// TODO: this could probably be made more elegant
 // ES6 syntax doesn't let you export a name and declare it in one step
-export const getApplication = (...params) => enhanceWithRetry(2, getSingleApplication, ...params)
+export const getApplication = () => enhanceWithRetries(getSingleApplication, 2)
