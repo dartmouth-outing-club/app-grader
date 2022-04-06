@@ -1,17 +1,10 @@
-import fs from 'fs'
-import path from 'path'
+import { APP_CONFIG } from '../modules/config.js'
 
-const CONFIG_ROUTE = path.join(process.cwd(), 'app-config.json')
-
-// Read in the config file on module load
-const data = fs.readFileSync(CONFIG_ROUTE)
-const config = JSON.parse(data.toString())
-
-// Map the letter of the config file to the index of the array
-const indices = config.questions.map((item) => columnLetterToArrayIndex(item.column))
-const identifierIndex = columnLetterToArrayIndex(config.identifierColumn)
-const progressIndex = config.progressColumn
-	? columnLetterToArrayIndex(config.progressColumn)
+// Map the letter of the APP_CONFIG file to the index of the array
+const indices = APP_CONFIG.questions.map((item) => columnLetterToArrayIndex(item.column))
+const identifierIndex = columnLetterToArrayIndex(APP_CONFIG.identifierColumn)
+const progressIndex = APP_CONFIG.progressColumn
+	? columnLetterToArrayIndex(APP_CONFIG.progressColumn)
 	: undefined
 
 /**
@@ -30,18 +23,18 @@ function columnLetterToArrayIndex(letter) {
 	return column - 1
 }
 
-/** Get the the application questions from the config file */
+/** Get the the application questions from the APP_CONFIG file */
 function getQuestions() {
-	return config.questions.map((item) => item.prompt)
+	return APP_CONFIG.questions.map((item) => item.prompt)
 }
 
 /**
- * Get the headers from the sheet, based on the columns in the config file.
+ * Get the headers from the sheet, based on the columns in the APP_CONFIG file.
  * We're not using this right now, since the headers on the sheet could be something like "Question 1",
- * hence the config file, but I already wrote it so...
+ * hence the APP_CONFIG file, but I already wrote it so...
  *
  * @param sheet a single sheet from a Google Sheets V4 API
- * @returns the first row (headers) of the columns denoted in the config file
+ * @returns the first row (headers) of the columns denoted in the APP_CONFIG file
  */
 export function getHeaders(sheet) {
 	// Get the first row from the rowData
@@ -53,7 +46,7 @@ export function getHeaders(sheet) {
 		throw 'Missing/improperly formatted header row'
 	}
 
-	// Get the headers specificed in the config file
+	// Get the headers specificed in the APP_CONFIG file
 	const headers = headerRow.values
 		.filter((value, index) => indices.includes(index))
 		.map((column) => column.userEnteredValue?.stringValue || '')
@@ -64,13 +57,13 @@ export function getHeaders(sheet) {
 
 export function isComplete(row) {
 	if (!progressIndex) {
-		throw 'Error: checking for completeness but no progress index is defined in the config file'
+		throw 'Error: checking for completeness but no progress index is defined in the APP_CONFIG file'
 	}
 	return row.values[progressIndex].userEnteredValue?.numberValue === 100
 }
 
 export function convertSheetRowToApplication(row) {
-	// Get the fields specified in the config file
+	// Get the fields specified in the APP_CONFIG file
 	const responses = indices
 		.map((index) => row.values[index]) // Get the value each index (might be undefined)
 		.map((column) => column?.userEnteredValue?.stringValue || '') // Get the string in each value

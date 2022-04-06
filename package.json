@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
-                "start": "node build",
+		"start": "node build",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
 		"prepare": "svelte-kit sync",
@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"dotenv": "^16.0.0",
 		"googleapis": "^99.0.0",
 		"redis": "^4.0.6"
 	}

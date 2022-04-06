@@ -1,5 +1,5 @@
-import path from 'path'
 import { google } from 'googleapis'
+import { GOOGLE_SERVICE_KEY } from './config.js'
 
 const APPLICATIONS_SHEET_ID = '1X31_BF8Ffl39ZeGPF75MrvenKH4UIO5k6j3pwInw0NM'
 const SPREADSHEET_AUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
@@ -16,7 +16,7 @@ function sleepSeconds(seconds) {
 
 async function setToken() {
 	const auth = new google.auth.GoogleAuth({
-		keyFile: path.join(process.cwd(), 'jwt.keys.json'),
+		credentials: GOOGLE_SERVICE_KEY,
 		scopes: [SPREADSHEET_AUTH_SCOPE]
 	})
 	const client = await auth.getClient()

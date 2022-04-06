@@ -1,5 +1,5 @@
 import { createClient } from 'redis'
-import { createFieldsFromResponses } from '../functions/sheetFormatting'
+import { createFieldsFromResponses } from '../functions/sheetFormatting.js'
 
 const USER_NAMESPACE = 'user'
 const LOCK_NAMESPACE = 'lock'
