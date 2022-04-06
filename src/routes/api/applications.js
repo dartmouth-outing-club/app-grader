@@ -1,4 +1,3 @@
-import { getApplication } from '../../modules/google'
 import { getOrCheckoutApp } from '../../modules/redis'
 
 const ERROR_RES = {
@@ -8,16 +7,13 @@ const ERROR_RES = {
 }
 
 export async function get({ clientAddress }) {
-	const { applicationId, fields } = await getApplication()
+	const { applicationId, fields } = await getOrCheckoutApp(clientAddress)
 
 	if (!applicationId) {
 		return ERROR_RES
 	}
 
-	await getOrCheckoutApp(applicationId, clientAddress)
-
 	console.log(`Serving application ${applicationId} to ${clientAddress}`)
-
 	const body = {
 		application: fields,
 		secondsRemaining: 1200

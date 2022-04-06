@@ -2,7 +2,8 @@ module.exports = {
 	root: true,
 	extends: ['eslint:recommended', 'prettier'],
 	rules: {
-		semi: ['error', 'never']
+		semi: ['error', 'never'],
+		'import/extensions': ['always']
 	},
 	plugins: ['svelte3'],
 	overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
