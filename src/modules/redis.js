@@ -1,5 +1,6 @@
 import { createClient } from 'redis'
 import { createFieldsFromResponses } from '../functions/sheetFormatting.js'
+import { REDIS_URL } from './config.js'
 
 const USER_NAMESPACE = 'user'
 const LOCK_NAMESPACE = 'lock'
@@ -8,23 +9,20 @@ const APPS_SET = 'apps'
 
 const LOCK_SECONDS = 1200
 
-// Initialize the client on module load
 let client
-initializeClient().then((newClient) => {
-	client = newClient
-})
-
 async function initializeClient() {
 	if (client) {
 		return
 	}
 
-	const newClient = createClient()
+	const newClient = createClient({
+		url: process.env.NODE_ENV === 'development' ? 'redis://localhost:6379' : REDIS_URL
+	})
 	newClient.on('error', (err) => console.error('Redis Client Error', err))
 
 	await newClient.connect()
 	console.log('initialized redis')
-	return newClient
+	client = newClient
 }
 
 async function checkoutApp(applicationId, user) {
@@ -43,6 +41,7 @@ async function checkoutApp(applicationId, user) {
 const getRandomAppId = async () => client.SRANDMEMBER(APPS_SET)
 
 export async function getOrCheckoutApp(user) {
+	await initializeClient()
 	// Check if user has app checked out and if they still have the lock on it
 
 	// const appId = await client.get(`${USER_NAMESPACE}:${user}`)
