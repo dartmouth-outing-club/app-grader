@@ -10,9 +10,15 @@ const LOCK_SECONDS = 1200
 
 // Initialize the client on module load
 let client
-client = await initializeClient()
+initializeClient().then((newClient) => {
+	client = newClient
+})
 
 async function initializeClient() {
+	if (client) {
+		return
+	}
+
 	const newClient = createClient()
 	newClient.on('error', (err) => console.error('Redis Client Error', err))
 
@@ -76,6 +82,7 @@ function setApp(application) {
 }
 
 export async function loadApplications(applications) {
+	await initializeClient()
 	const promises = applications.map(setApp)
 	return await Promise.all(promises)
 }
