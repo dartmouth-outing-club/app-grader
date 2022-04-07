@@ -8,7 +8,7 @@ const APP_NAMESPACE = 'app'
 const UNION_STORE_SET = 'locks:u:apps'
 const APPS_SET = 'apps'
 
-const LOCK_SECONDS = 1202
+const LOCK_SECONDS = 1200
 
 // https://devcenter.heroku.com/articles/connecting-heroku-redis#connecting-in-node-js
 const DEV_CONFIG = { url: 'redis://localhost:6379' }
@@ -47,7 +47,6 @@ async function checkoutRandomApp(user) {
 		.DEL(UNION_STORE_SET)
 		.EXEC()
 	const unlockedApplicationId = getUnlockedAppReplies[2]
-	console.log(unlockedApplicationId)
 	if (!unlockedApplicationId) {
 		console.log(`All applications locked. Either you forgot to init the db, or we're almost done!`)
 		return null

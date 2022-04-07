@@ -1,11 +1,12 @@
 <script>
 	import { onDestroy, onMount } from 'svelte'
+	import GoogleButton from '../components/googleButton.svelte'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
 	const MESSAGE_500 =
 		'Sorry, something went wrong. Please try again later and contact doc-webadmin@dartmouth.edu if problem persists.'
 	let message
-	let application, counter
+	let application, counter, credential
 	let secondsRemaining = 0
 	let loading = false
 
@@ -55,9 +56,14 @@
 		recoginize the applicant based on what they wrote, please click the "skip" button to move on to
 		the next application.
 	</p>
-	<button class={loading ? 'hidden' : ''} on:click={fetchNextApp}
-		>{application ? 'Pass' : 'Get Application'}</button
-	>
+	{#if !credential}
+		<GoogleButton bind:credential />
+	{:else}
+		<button class={loading ? 'hidden' : ''} on:click={fetchNextApp}
+			>{application ? 'Pass' : 'Get Application'}</button
+		>
+	{/if}
+
 	{#if application}
 		<h3>Time remaining</h3>
 		<p>You have {secondsRemaining} seconds remaining</p>
@@ -75,6 +81,20 @@
 </div>
 
 <style>
+	button {
+		width: 183px;
+		height: 38px;
+		color: #ffffff;
+		/* background-color: #ffffff; */
+		/* border-style: solid; */
+		background-color: #00693e;
+		border-radius: 4px;
+	}
+
+	button:hover {
+		background-color: #12312b;
+	}
+
 	/* https://communications.dartmouth.edu/visual-identity/design-elements/color-palette */
 	:global(body) {
 		background-color: #ffffff;
