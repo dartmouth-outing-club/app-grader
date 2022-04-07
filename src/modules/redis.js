@@ -56,6 +56,11 @@ export async function getOrCheckoutApp(user) {
 
 	// Get a random app
 	const applicationId = await getRandomAppId()
+        if (!applicationId) {
+                console.error(`Retrieved applicationId ${applicationId}. Did you forget to init the db?`)
+                return {}
+        }
+
 	const responsesJson = await checkoutApp(applicationId, user)
 	return {
 		fields: createFieldsFromResponses(JSON.parse(responsesJson)),

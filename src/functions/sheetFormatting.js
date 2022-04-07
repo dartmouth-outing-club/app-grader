@@ -89,7 +89,6 @@ export function getAllApps(sheet, offset = 1, onlyComplete = true) {
 
 export function createFieldsFromResponses(responses) {
 	const questions = getQuestions()
-	console.log(responses)
 	return questions.map((question, index) => ({
 		question,
 		response: responses[index]
