@@ -1,22 +1,34 @@
-import { getOrCheckoutApp } from '../../modules/redis'
+import { getApplicationForUser } from '../../modules/redis'
 
 const ERROR_RES = {
 	status: 500,
-	error: 'Internal Server Error',
-	message: 'Sorry, please try again later.'
+	body: {
+		message: 'Sorry, something went wrong. Please try again later.'
+	}
+}
+const EMPTY_RES = {
+	status: 204
 }
 
 export async function get({ clientAddress }) {
-	const { applicationId, fields } = await getOrCheckoutApp(clientAddress)
-
-	if (!applicationId) {
+	// Attempt to get an application for the user
+	let application
+	try {
+		application = await getApplicationForUser(clientAddress)
+	} catch {
 		return ERROR_RES
+	}
+
+	// If it came back empty, that means there's no applications
+	const { applicationId, fields, secondsRemaining } = application
+	if (!applicationId) {
+		return EMPTY_RES
 	}
 
 	console.log(`Serving application ${applicationId} to ${clientAddress}`)
 	const body = {
 		application: fields,
-		secondsRemaining: 1200
+		secondsRemaining
 	}
 
 	return {

@@ -3,11 +3,12 @@ import { createFieldsFromResponses } from '../functions/sheetFormatting.js'
 import { REDIS_URL } from './config.js'
 
 const USER_NAMESPACE = 'user'
-const LOCK_NAMESPACE = 'lock'
+const LOCKS_SET = 'locks'
 const APP_NAMESPACE = 'app'
+const UNION_STORE_SET = 'locks:u:apps'
 const APPS_SET = 'apps'
 
-const LOCK_SECONDS = 1200
+const LOCK_SECONDS = 1202
 
 // https://devcenter.heroku.com/articles/connecting-heroku-redis#connecting-in-node-js
 const DEV_CONFIG = { url: 'redis://localhost:6379' }
@@ -27,44 +28,88 @@ async function initializeClient() {
 	client = newClient
 }
 
-async function checkoutApp(applicationId, user) {
-	const lockKey = `${LOCK_NAMESPACE}:${applicationId}`
-	const userKey = `${USER_NAMESPACE}:${user}`
-	const replies = await client
-		.multi()
-		.set(userKey, applicationId)
-		.set(lockKey, user)
-		.EXPIRE(lockKey, LOCK_SECONDS)
-		.get(`${APP_NAMESPACE}:${applicationId}`)
-		.EXEC()
-	return replies[replies.length - 1]
+function getSecondsRemaining(expireTime) {
+	const now = new Date()
+	const secondsRemaining = (expireTime - now.getTime()) / 1000
+	return secondsRemaining.toFixed()
 }
 
-const getRandomAppId = async () => client.SRANDMEMBER(APPS_SET)
+async function checkoutRandomApp(user) {
+	const now = new Date()
+	const expireTime = now.getTime() + LOCK_SECONDS * 1000
 
-export async function getOrCheckoutApp(user) {
+	// Get a random application that is not currently locked
+	const getUnlockedAppReplies = await client
+		.multi()
+		.ZREMRANGEBYSCORE(LOCKS_SET, -Infinity, now.getTime())
+		.ZDIFFSTORE(UNION_STORE_SET, APPS_SET, LOCKS_SET)
+		.ZRANDMEMBER(UNION_STORE_SET)
+		.DEL(UNION_STORE_SET)
+		.EXEC()
+	const unlockedApplicationId = getUnlockedAppReplies[2]
+	console.log(unlockedApplicationId)
+	if (!unlockedApplicationId) {
+		console.log(`All applications locked. Either you forgot to init the db, or we're almost done!`)
+		return null
+	}
+
+	const lockAttempt = await client.ZADD(
+		LOCKS_SET,
+		{ score: expireTime, value: unlockedApplicationId },
+		{ NX: true }
+	)
+	console.log(lockAttempt)
+	if (lockAttempt === 0) {
+		// If the lock failed, try again
+		// This should only happen if another thread tried to lock the same app after the diff step
+		console.log(`Lock attempt failed for ${user} on application ${unlockedApplicationId}. Retrying`)
+		return checkoutRandomApp(user)
+	} else if (lockAttempt === 1) {
+		// If it succeeded, set the lock asynchronously, then return the app
+		client.SET(`${USER_NAMESPACE}:${user}`, unlockedApplicationId).catch((err) => {
+			console.error(err)
+		})
+		return { applicationId: unlockedApplicationId, expireTime }
+	}
+
+	console.error(`ERROR: Lock attempt on ${unlockedApplicationId} returned: ${lockAttempt}`)
+	return null
+}
+
+const getRandomAppId = async () => client.ZRANDMEMBER(APPS_SET)
+
+export async function getLockedAppOrCheckoutRandom(user) {
 	await initializeClient()
 	// Check if user has app checked out and if they still have the lock on it
+	const lockedApplicationId = await client.get(`${USER_NAMESPACE}:${user}`)
+	if (lockedApplicationId) {
+		const [expireTime] = await client.ZMSCORE(LOCKS_SET, lockedApplicationId)
+		if (expireTime && expireTime > new Date().getTime()) {
+			console.log(`User ${user} requested ${lockedApplicationId} for which they have a lock.`)
+			return { applicationId: lockedApplicationId, expireTime }
+		}
+	}
 
-	// const appId = await client.get(`${USER_NAMESPACE}:${user}`)
-	// const lock = await client.get(`${LOCK_NAMESPACE}:${appId}`)
+	// If there's no lock or an expired one, checkout a new app
+	// Note that we didn't remove the expired lock; this function will take care of that
+	const { applicationId, expireTime } = await checkoutRandomApp(user)
 
-	// If the user has the lock, give them that app
-	// if (lock === user) {
-	// 	return await client.get(appId)
-	// }
+	// If the app fails to get an application, return an empty object
+	if (applicationId === null) {
+		return {}
+	}
 
-	// Get a random app
-	const applicationId = await getRandomAppId()
-        if (!applicationId) {
-                console.error(`Retrieved applicationId ${applicationId}. Did you forget to init the db?`)
-                return {}
-        }
+	return { applicationId, expireTime }
+}
 
-	const responsesJson = await checkoutApp(applicationId, user)
+export async function getApplicationForUser(user) {
+	const { applicationId, expireTime } = await getLockedAppOrCheckoutRandom(user)
+	const responsesJson = await client.GET(`${APP_NAMESPACE}:${applicationId}`)
+
 	return {
 		fields: createFieldsFromResponses(JSON.parse(responsesJson)),
-		applicationId
+		applicationId,
+		secondsRemaining: getSecondsRemaining(expireTime)
 	}
 }
 
@@ -83,7 +128,7 @@ function setApp(application) {
 	return client
 		.multi()
 		.set(`${APP_NAMESPACE}:${id}`, responsesString, { NX: true })
-		.sAdd(APPS_SET, id)
+		.ZADD(APPS_SET, { score: 0, value: id })
 		.EXEC()
 }
 

@@ -6,7 +6,6 @@ A small webapp that pull applications from a google sheet and gives people the a
 
 To run the app, create a JSON config file with the following information.
 
-
 ```json
 	"progressColumn": "E",
 	"identifierColumn": "CT",
@@ -21,6 +20,7 @@ To run the app, create a JSON config file with the following information.
 		}
 	]
 ```
+
 This allows the app to map a question to the appropriate column, even if the form entry doesn't create the exact column headers we want in row #1.
 
 To load this config file into the application, it needs to be compressed into a one-line environment variable. A helper script, `scripts/generate-env-vars.js`, can do this for you: if the config file has been saved as `app-config.json` in the `/configs` directory, the script will create a `.env` file in the home directory with the config in it.

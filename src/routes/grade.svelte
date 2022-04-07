@@ -1,8 +1,13 @@
 <script>
 	import { onDestroy, onMount } from 'svelte'
 
+	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
+	const MESSAGE_500 =
+		'Sorry, something went wrong. Please try again later and contact doc-webadmin@dartmouth.edu if problem persists.'
+	let message
 	let application, counter
 	let secondsRemaining = 0
+	let loading = false
 
 	onMount(() => {
 		counter = setInterval(() => {
@@ -15,13 +20,27 @@
 	})
 
 	const fetchNextApp = async () => {
-		// Fetch the application from the backend
-		const res = await fetch('/api/applications')
-		const sheetData = await res.json()
-		application = sheetData.application
+		// Don't second a second request if the first one is still loading
+		if (loading) {
+			return
+		}
 
-		// Decrement the seconds-remaining counter every second
-		secondsRemaining = sheetData.secondsRemaining
+		// Fetch the application from the backend
+		loading = true
+		message = null
+		const res = await fetch('/api/applications')
+
+		if (res.status === 200) {
+			const body = await res.json()
+			application = body.application
+			secondsRemaining = body.secondsRemaining
+		} else if (res.status === 204) {
+			message = MESSAGE_204
+		} else if (res.status === 500) {
+			message = MESSAGE_500
+		}
+
+		loading = false
 	}
 </script>
 
@@ -36,7 +55,9 @@
 		recoginize the applicant based on what they wrote, please click the "skip" button to move on to
 		the next application.
 	</p>
-	<button on:click={fetchNextApp}>{application ? 'Pass' : 'Get Application'}</button>
+	<button class={loading ? 'hidden' : ''} on:click={fetchNextApp}
+		>{application ? 'Pass' : 'Get Application'}</button
+	>
 	{#if application}
 		<h3>Time remaining</h3>
 		<p>You have {secondsRemaining} seconds remaining</p>
@@ -47,6 +68,9 @@
 				<p>{appField.response}</p>
 			{/each}
 		</div>
+	{/if}
+	{#if message}
+		<p>{message}</p>
 	{/if}
 </div>
 
