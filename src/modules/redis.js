@@ -9,15 +9,17 @@ const APPS_SET = 'apps'
 
 const LOCK_SECONDS = 1200
 
+// https://devcenter.heroku.com/articles/connecting-heroku-redis#connecting-in-node-js
+const DEV_CONFIG = { url: 'redis://localhost:6379' }
+const PROD_CONFIG = { url: REDIS_URL, socket: { tls: true, rejectUnauthorized: false } }
+
 let client
 async function initializeClient() {
 	if (client) {
 		return
 	}
 
-	const newClient = createClient({
-		url: process.env.NODE_ENV === 'development' ? 'redis://localhost:6379' : REDIS_URL
-	})
+	const newClient = createClient(process.env.NODE_ENV === 'development' ? DEV_CONFIG : PROD_CONFIG)
 	newClient.on('error', (err) => console.error('Redis Client Error', err))
 
 	await newClient.connect()
