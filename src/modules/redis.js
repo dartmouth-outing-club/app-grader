@@ -34,6 +34,36 @@ function getSecondsRemaining(expireTime) {
 	return secondsRemaining.toFixed()
 }
 
+const getUserStoredLock = async (user) => {
+	const value = await client.GET(`${USER_NAMESPACE}:${user}`)
+	const [applicationId, expireTime] = value.split(':')
+	return { applicationId, expireTime }
+}
+
+/**
+ * Add the app responses to the redis database.
+ * Note that this adds the app twice, once where `app:appId` is the key to the application,
+ * and once to a set of appIds that can be used to grab a random one.
+ *
+ * @param application the formatted application object
+ * @returns a Promise that will resolve to the redis client's responses
+ */
+function setApp(application) {
+	const id = application.applicationId
+	const responsesString = JSON.stringify(application.responses)
+
+	return client
+		.multi()
+		.set(`${APP_NAMESPACE}:${id}`, responsesString, { NX: true })
+		.ZADD(APPS_SET, { score: 0, value: id })
+		.EXEC()
+}
+
+/**
+ * Retrieve and lock an application that is eligible to be reviewed.
+ * @param user an id string for the user checking out the app
+ * @returns an { applicationId, expireTime } object
+ */
 async function checkoutRandomApp(user) {
 	const now = new Date()
 	const expireTime = now.getTime() + LOCK_SECONDS * 1000
@@ -64,9 +94,11 @@ async function checkoutRandomApp(user) {
 		return checkoutRandomApp(user)
 	} else if (lockAttempt === 1) {
 		// If it succeeded, set the lock asynchronously, then return the app
-		client.SET(`${USER_NAMESPACE}:${user}`, unlockedApplicationId).catch((err) => {
-			console.error(err)
-		})
+		client
+			.SET(`${USER_NAMESPACE}:${user}`, `${unlockedApplicationId}:${expireTime}`)
+			.catch((err) => {
+				console.error(err)
+			})
 		return { applicationId: unlockedApplicationId, expireTime }
 	}
 
@@ -74,19 +106,44 @@ async function checkoutRandomApp(user) {
 	return null
 }
 
-const getRandomAppId = async () => client.ZRANDMEMBER(APPS_SET)
-
-export async function getLockedAppOrCheckoutRandom(user) {
-	await initializeClient()
+/**
+ * Check if the user has a locked application, and return it if so.
+ * @param user an id string for the user checking out the app
+ * @returns an application object if the user has a lock, null otherwise
+ */
+async function getLockedApp(user) {
 	// Check if user has app checked out and if they still have the lock on it
-	const lockedApplicationId = await client.get(`${USER_NAMESPACE}:${user}`)
-	if (lockedApplicationId) {
-		const [expireTime] = await client.ZMSCORE(LOCKS_SET, lockedApplicationId)
-		if (expireTime && expireTime > new Date().getTime()) {
-			console.log(`User ${user} requested ${lockedApplicationId} for which they have a lock.`)
-			return { applicationId: lockedApplicationId, expireTime }
-		}
-		console.log(`User ${user} used to have a lock on ${lockedApplicationId}, but it expired.`)
+	const { applicationId, expireTime: userStoredExpireTime } = await getUserStoredLock(user)
+	if (!applicationId) {
+		console.log(`User ${user} has no locks.`)
+		return null
+	}
+
+	const expireTime = await client.ZSCORE(LOCKS_SET, applicationId)
+	if (!expireTime) {
+		console.log(`User ${user} used to have a lock on ${applicationId}, now gone (likely expired).`)
+		return null
+	}
+
+	if (expireTime !== parseInt(userStoredExpireTime)) {
+		console.log(`User ${user} has a lock, but ${userStoredExpireTime} doesn't match ${expireTime}`)
+		return null
+	}
+
+	if (expireTime > new Date().getTime()) {
+		console.log(`User ${user} has a lock on ${applicationId}.`)
+		return { applicationId: applicationId, expireTime }
+	}
+
+	console.log(`Existing lock on ${applicationId} is expired.`)
+	return null
+}
+
+async function getLockedAppOrCheckoutRandom(user) {
+	// Get locked application if one exists
+	const application = await getLockedApp(user)
+	if (application) {
+		return application
 	}
 
 	// If there's no lock or an expired one, checkout a new app
@@ -102,6 +159,7 @@ export async function getLockedAppOrCheckoutRandom(user) {
 }
 
 export async function getApplicationForUser(user) {
+	await initializeClient()
 	if (!user) {
 		throw `Invalid argument: provided user was ${user}`
 	}
@@ -116,27 +174,26 @@ export async function getApplicationForUser(user) {
 	}
 }
 
-/**
- * Add the app responses to the redis database.
- * Note that this adds the app twice, once where `app:appId` is the key to the application,
- * and once to a set of appIds that can be used to grab a random one.
- *
- * @param application the formatted application object
- * @returns a Promise that will resolve to the redis client's responses
- */
-function setApp(application) {
-	const id = application.applicationId
-	const responsesString = JSON.stringify(application.responses)
-
-	return client
-		.multi()
-		.set(`${APP_NAMESPACE}:${id}`, responsesString, { NX: true })
-		.ZADD(APPS_SET, { score: 0, value: id })
-		.EXEC()
-}
-
 export async function loadApplications(applications) {
 	await initializeClient()
 	const promises = applications.map(setApp)
 	return await Promise.all(promises)
+}
+
+export async function deleteLock(user) {
+	const lock = await getLockedApp(user)
+	if (lock) {
+		const results = await client
+			.multi()
+			.SET(`${USER_NAMESPACE}:${user}`, '')
+			.ZREM(LOCKS_SET, lock.applicationId)
+			.EXEC()
+
+		if (results[0] !== 'OK' || results[1] !== 1) {
+			console.warn(`Unexpected delete results: ${results}`)
+		}
+		return Promise.resolve(true)
+	}
+	console.warn(`User ${user} requested to delete a lock, but none found.`)
+	return Promise.resolve(true)
 }

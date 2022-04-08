@@ -1,11 +1,11 @@
 <script>
 	import { onDestroy, onMount } from 'svelte'
 	import GoogleButton from '../components/googleButton.svelte'
-	import { fetchApplication } from '../functions/frontendFetch.js'
+	import { fetchApplication, passApplication } from '../functions/frontendFetch.js'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
 	const MESSAGE_500 =
-		'Sorry, something went wrong. Please try again later and contact doc-webadmin@dartmouth.edu if problem persists.'
+		'Sorry, something went wrong. Please try again, and contact doc-webadmin@dartmouth.edu if problem persists.'
 	let message
 	let application, counter, credential
 	let secondsRemaining = 0
@@ -30,6 +30,10 @@
 		// Fetch the application from the backend
 		loading = true
 		message = null
+		if (application) {
+			// Delete the existing lock if necessary
+			await passApplication(credential)
+		}
 		const res = await fetchApplication(credential)
 
 		if (res.status === 200) {
@@ -57,11 +61,12 @@
 		recoginize the applicant based on what they wrote, please click the "skip" button to move on to
 		the next application.
 	</p>
+	<p>You will need to sign in using your Dartmouth-provided Google account.</p>
 	{#if !credential}
 		<GoogleButton bind:credential />
 	{:else}
 		<button class={loading ? 'hidden' : ''} on:click={fetchNextApp}
-			>{application ? 'Pass' : 'Get Application'}</button
+			>{application ? 'Skip Application' : 'Get Application'}</button
 		>
 	{/if}
 
@@ -104,7 +109,7 @@
 	}
 
 	.content {
-		padding: 10px;
+		padding: 20px;
 	}
 
 	h1 {

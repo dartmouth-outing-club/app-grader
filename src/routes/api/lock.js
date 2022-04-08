@@ -1,5 +1,5 @@
 import { verifyJwt } from '../../modules/clientAuth.js'
-import { getApplicationForUser } from '../../modules/redis'
+import { deleteLock, getApplicationForUser } from '../../modules/redis.js'
 
 const ERROR_RES = {
 	status: 500,
@@ -10,17 +10,25 @@ const ERROR_RES = {
 const EMPTY_RES = { status: 204 }
 const ACCESS_DENIED_RES = { status: 403 }
 
-export async function get(event) {
-	// Verify user's JWT
+async function getUserFromJwt(event) {
 	const headers = event?.request?.headers
 	const authorization = headers.get('Authorization')
 
-	let userId
 	try {
-		userId = await verifyJwt(authorization.replace('Bearer ', ''))
+		return verifyJwt(authorization.replace('Bearer ', ''))
 	} catch (err) {
 		console.warn(`Invalid JWT provided by ${event.clientAddress}`)
-		console.error(err)
+		console.warn(err)
+		throw 'ACCESS_DENIED'
+	}
+}
+
+export async function post(event) {
+	// Verify user's JWT
+	let userId
+	try {
+		userId = await getUserFromJwt(event)
+	} catch {
 		return ACCESS_DENIED_RES
 	}
 
@@ -51,4 +59,17 @@ export async function get(event) {
 			'Content-Type': 'application/json'
 		}
 	}
+}
+
+export async function del(event) {
+	// Verify user's JWT
+	let userId
+	try {
+		userId = await getUserFromJwt(event)
+	} catch {
+		return ACCESS_DENIED_RES
+	}
+	console.log(`Deleting lock for ${userId}`)
+	await deleteLock(userId)
+	return EMPTY_RES
 }
