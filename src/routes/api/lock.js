@@ -42,16 +42,13 @@ export async function post(event) {
 	}
 
 	// If it came back empty, that means there's no applications
-	const { applicationId, fields, secondsRemaining } = application
+	const { applicationId, fields } = application
 	if (!applicationId) {
 		return EMPTY_RES
 	}
 
 	console.log(`Serving application ${applicationId} to ${userId}`)
-	const body = {
-		application: fields,
-		secondsRemaining
-	}
+	const body = { application: fields }
 
 	return {
 		body: JSON.stringify(body),
