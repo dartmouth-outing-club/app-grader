@@ -1,9 +1,20 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-const APP_CONFIG = JSON.parse(process.env.APP_CONFIG)
+function safeParse(varName) {
+	try {
+		return JSON.parse(process.env[varName])
+	} catch (error) {
+		console.error(`Error parsing ${varName}`)
+		throw error
+	}
+}
+
+const APP_CONFIG = safeParse('APP_CONFIG')
+const FULL_SERVICE_KEY = safeParse('GOOGLE_SERVICE_KEY')
+
 const GOOGLE_SERVICE_KEY = {
-	...JSON.parse(process.env.GOOGLE_SERVICE_KEY),
+	...FULL_SERVICE_KEY,
 	private_key: process.env.GOOGLE_SERVICE_PRIVATE_KEY
 }
 const REDIS_URL = process.env.REDIS_URL
