@@ -48,8 +48,8 @@
 		recoginize the applicant based on what they wrote, please click the "skip" button to move on to
 		the next application.
 	</p>
-	<p>You will need to sign in using your Dartmouth-provided Google account.</p>
 	{#if !credential}
+		<p>You will need to sign in using your Dartmouth-provided Google account.</p>
 		<GoogleButton bind:credential />
 	{:else}
 		<button class={loading ? 'hidden' : ''} on:click={fetchNextApp}

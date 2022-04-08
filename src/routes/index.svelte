@@ -1,9 +1,5 @@
-<script context="module">
-	// Redirect to the /grade route on load
-	export async function load() {
-		return {
-			status: 302,
-			redirect: '/grade'
-		}
-	}
+<script>
+	import Grade from '../components/grade.svelte'
 </script>
+
+<Grade />
