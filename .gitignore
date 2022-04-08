@@ -8,4 +8,5 @@ node_modules
 !.env.example
 jwt.keys.json
 app-config.json
+client-oauth.json
 dump.rdb
