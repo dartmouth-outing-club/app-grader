@@ -57,7 +57,6 @@ async function checkoutRandomApp(user) {
 		{ score: expireTime, value: unlockedApplicationId },
 		{ NX: true }
 	)
-	console.log(lockAttempt)
 	if (lockAttempt === 0) {
 		// If the lock failed, try again
 		// This should only happen if another thread tried to lock the same app after the diff step
@@ -87,6 +86,7 @@ export async function getLockedAppOrCheckoutRandom(user) {
 			console.log(`User ${user} requested ${lockedApplicationId} for which they have a lock.`)
 			return { applicationId: lockedApplicationId, expireTime }
 		}
+		console.log(`User ${user} used to have a lock on ${lockedApplicationId}, but it expired.`)
 	}
 
 	// If there's no lock or an expired one, checkout a new app
