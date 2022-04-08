@@ -1,7 +1,7 @@
 import { google } from 'googleapis'
-import { GOOGLE_SERVICE_KEY } from './config.js'
+import { APP_CONFIG, GOOGLE_SERVICE_KEY } from './config.js'
 
-const APPLICATIONS_SHEET_ID = '1X31_BF8Ffl39ZeGPF75MrvenKH4UIO5k6j3pwInw0NM'
+const APPLICATIONS_SHEET_ID = APP_CONFIG.sheetId
 const SPREADSHEET_AUTH_SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
 const APPLICATIONS_SHEET_TITLE = 'responses'
 

@@ -2,7 +2,7 @@
  * apps-loader.js - loads the applications sheet into redis
  */
 import { getAllApps } from '../src/functions/sheetFormatting.js'
-import { getSheet } from '../src/modules/google.js'
+import { getSheet } from '../src/modules/serviceAccount.js'
 import { loadApplications } from '../src/modules/redis.js'
 
 if (process.argv.length != 3) {

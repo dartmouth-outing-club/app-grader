@@ -36,6 +36,10 @@ function getSecondsRemaining(expireTime) {
 
 const getUserStoredLock = async (user) => {
 	const value = await client.GET(`${USER_NAMESPACE}:${user}`)
+	if (!value) {
+		return {}
+	}
+
 	const [applicationId, expireTime] = value.split(':')
 	return { applicationId, expireTime }
 }
