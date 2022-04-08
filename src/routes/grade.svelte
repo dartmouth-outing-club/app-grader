@@ -1,6 +1,7 @@
 <script>
 	import { onDestroy, onMount } from 'svelte'
 	import GoogleButton from '../components/googleButton.svelte'
+	import { fetchApplication } from '../functions/frontendFetch.js'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
 	const MESSAGE_500 =
@@ -29,7 +30,7 @@
 		// Fetch the application from the backend
 		loading = true
 		message = null
-		const res = await fetch('/api/applications')
+		const res = await fetchApplication(credential)
 
 		if (res.status === 200) {
 			const body = await res.json()

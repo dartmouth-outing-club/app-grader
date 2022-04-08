@@ -102,6 +102,10 @@ export async function getLockedAppOrCheckoutRandom(user) {
 }
 
 export async function getApplicationForUser(user) {
+	if (!user) {
+		throw `Invalid argument: provided user was ${user}`
+	}
+
 	const { applicationId, expireTime } = await getLockedAppOrCheckoutRandom(user)
 	const responsesJson = await client.GET(`${APP_NAMESPACE}:${applicationId}`)
 

@@ -26,6 +26,7 @@
 	"type": "module",
 	"dependencies": {
 		"dotenv": "^16.0.0",
+		"google-auth-library": "^7.14.1",
 		"googleapis": "^99.0.0",
 		"redis": "^4.0.6"
 	}
