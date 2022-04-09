@@ -11,7 +11,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID)
  * @returns the user's email if valid
  * @throws exception if the user is not valid
  */
-export async function verifyJwt(token) {
+async function verifyJwt(token) {
 	const ticket = await client.verifyIdToken({
 		idToken: token,
 		audience: GOOGLE_CLIENT_ID // Specify the CLIENT_ID of the app that accesses the backend
@@ -23,4 +23,17 @@ export async function verifyJwt(token) {
 	// If request specified a G Suite domain:
 	// const domain = payload['hd'];
 	return userid
+}
+
+export async function getUserFromJwt(event) {
+	const headers = event?.request?.headers
+	const authorization = headers.get('Authorization')
+
+	try {
+		return verifyJwt(authorization.replace('Bearer ', ''))
+	} catch (err) {
+		console.warn(`Invalid JWT provided by ${event.clientAddress}`)
+		console.warn(err)
+		throw 'ACCESS_DENIED'
+	}
 }

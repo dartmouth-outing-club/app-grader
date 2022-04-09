@@ -2,8 +2,8 @@
 	export let application
 </script>
 
+<h2>Application</h2>
 <div class="app-fields">
-	<h2>Application</h2>
 	{#each application as { question, response }}
 		<h3>{question}</h3>
 		{#if response}
@@ -26,10 +26,6 @@
 		border-radius: 5px;
 		border-color: #00693e;
 		border-style: solid;
-	}
-
-	.app-fields h2 {
-		margin-top: 10px;
 	}
 
 	.no-response {

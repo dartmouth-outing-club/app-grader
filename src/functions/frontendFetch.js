@@ -17,3 +17,22 @@ export const passApplication = async (credential) => {
 		}
 	})
 }
+
+export const getGradingRubricItems = async (credential) => {
+	return fetch('/api/grade', {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${credential}`
+		}
+	})
+}
+
+export const sendGrade = async (credential, body) => {
+	return fetch('/api/grade', {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${credential}`
+		},
+		body: JSON.stringify(body)
+	})
+}

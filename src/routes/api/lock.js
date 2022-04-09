@@ -1,27 +1,6 @@
-import { verifyJwt } from '../../modules/clientAuth.js'
+import { getUserFromJwt } from '../../modules/clientAuth.js'
 import { deleteLock, getApplicationForUser } from '../../modules/redis.js'
-
-const ERROR_RES = {
-	status: 500,
-	body: {
-		message: 'Sorry, something went wrong. Please try again later.'
-	}
-}
-const EMPTY_RES = { status: 204 }
-const ACCESS_DENIED_RES = { status: 403 }
-
-async function getUserFromJwt(event) {
-	const headers = event?.request?.headers
-	const authorization = headers.get('Authorization')
-
-	try {
-		return verifyJwt(authorization.replace('Bearer ', ''))
-	} catch (err) {
-		console.warn(`Invalid JWT provided by ${event.clientAddress}`)
-		console.warn(err)
-		throw 'ACCESS_DENIED'
-	}
-}
+import { ACCESS_DENIED_RES, EMPTY_RES, ERROR_RES } from '../../constants/httpConstants.js'
 
 export async function post(event) {
 	// Verify user's JWT
@@ -51,6 +30,7 @@ export async function post(event) {
 	const body = { application: fields }
 
 	return {
+		status: 200,
 		body: JSON.stringify(body),
 		headers: {
 			'Content-Type': 'application/json'

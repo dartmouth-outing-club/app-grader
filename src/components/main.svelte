@@ -2,6 +2,7 @@
 	import ApplicationView from '../components/applicationView.svelte'
 	import GoogleButton from '../components/googleButton.svelte'
 	import { fetchApplication, passApplication } from '../functions/frontendFetch.js'
+	import GradeInput from './gradeInput.svelte'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
 	const MESSAGE_500 =
@@ -33,6 +34,7 @@
 			message = MESSAGE_500
 		}
 
+		document.body.scrollIntoView()
 		loading = false
 	}
 </script>
@@ -57,35 +59,17 @@
 		>
 	{/if}
 
-	{#if application}
-		<ApplicationView {application} />
-	{/if}
-
 	{#if message}
 		<p>{message}</p>
+	{/if}
+
+	{#if application}
+		<ApplicationView {application} />
+		<GradeInput bind:credential {fetchNextApp} />
 	{/if}
 </div>
 
 <style>
-	button {
-		width: 183px;
-		height: 38px;
-		color: #ffffff;
-		background-color: #00693e;
-		border-radius: 4px;
-	}
-
-	button:hover {
-		background-color: #12312b;
-	}
-
-	/* https://communications.dartmouth.edu/visual-identity/design-elements/color-palette */
-	:global(body) {
-		background-color: #ffffff;
-		margin: 0px;
-		padding: 0px;
-	}
-
 	.content {
 		padding: 20px;
 	}

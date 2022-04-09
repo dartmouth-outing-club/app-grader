@@ -2,9 +2,10 @@ import { createClient } from 'redis'
 import { createFieldsFromResponses } from '../functions/sheetFormatting.js'
 import { REDIS_URL } from './config.js'
 
-const USER_NAMESPACE = 'user'
-const LOCKS_SET = 'locks'
 const APP_NAMESPACE = 'app'
+const USER_NAMESPACE = 'user'
+const GRADE_NAMESPACE = 'grade'
+const LOCKS_SET = 'locks'
 const UNION_STORE_SET = 'locks:u:apps'
 const APPS_SET = 'apps'
 
@@ -136,7 +137,7 @@ async function getLockedApp(user) {
 
 	if (expireTime > new Date().getTime()) {
 		console.log(`User ${user} has a lock on ${applicationId}.`)
-		return { applicationId: applicationId, expireTime }
+		return { applicationId, expireTime }
 	}
 
 	console.log(`Existing lock on ${applicationId} is expired.`)
@@ -185,6 +186,7 @@ export async function loadApplications(applications) {
 }
 
 export async function deleteLock(user) {
+	await initializeClient()
 	const lock = await getLockedApp(user)
 	if (lock) {
 		const results = await client
@@ -200,4 +202,22 @@ export async function deleteLock(user) {
 	}
 	console.warn(`User ${user} requested to delete a lock, but none found.`)
 	return Promise.resolve(true)
+}
+
+export async function submitGrade(user, body) {
+	await initializeClient()
+	console.log(`User ${user} is submitting a grade.`)
+	const value = JSON.stringify(body)
+	const { applicationId } = await getLockedApp(user)
+
+	if (typeof applicationId !== 'string') {
+		throw `Unexpected applicationId ${applicationId}`
+	}
+
+	const results = await client
+		.multi()
+		.SET(`${GRADE_NAMESPACE}:${applicationId}:${user}`, value)
+		.ZINCRBY(APPS_SET, 1, applicationId)
+		.EXEC()
+	console.log(results)
 }

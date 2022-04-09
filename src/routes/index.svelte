@@ -1,5 +1,6 @@
 <script>
-	import Grade from '../components/grade.svelte'
+	import Main from '../components/main.svelte'
+	import '../global.css'
 </script>
 
-<Grade />
+<Main />
