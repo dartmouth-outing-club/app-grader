@@ -79,13 +79,7 @@ async function checkoutRandomApp(user) {
 	const getUnlockedAppReplies = await client
 		.multi()
 		.ZREMRANGEBYSCORE(LOCKS_SET, -Infinity, now.getTime())
-		.ZRANGESTORE(TO_GRADE_SET, APPS_SET, 0, 2, {
-			BY: 'SCORE',
-			LIMIT: {
-				offset: 0,
-				count: 1
-			}
-		})
+		.ZRANGESTORE(TO_GRADE_SET, APPS_SET, 0, 2, { BY: 'SCORE' })
 		.ZDIFFSTORE(UNION_STORE_SET, TO_GRADE_SET, LOCKS_SET)
 		.ZRANDMEMBER(UNION_STORE_SET)
 		.DEL(UNION_STORE_SET)

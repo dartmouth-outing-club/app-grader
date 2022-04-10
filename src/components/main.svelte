@@ -2,7 +2,7 @@
 	import ApplicationView from '../components/applicationView.svelte'
 	import GoogleButton from '../components/googleButton.svelte'
 	import { fetchApplication, passApplication } from '../functions/frontendFetch.js'
-	import { isCrooApp, isTripsApp } from '../functions/trips.js'
+	import { isCrooApp, isLeaderApp } from '../functions/trips.js'
 	import GradeInput from './gradeInput.svelte'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
@@ -10,6 +10,9 @@
 		'Sorry, something went wrong. Please try again, and contact doc-webadmin@dartmouth.edu if problem persists.'
 	let message, application, credential
 	let loading = false
+
+	$: leader = isLeaderApp(application)
+	$: croo = isCrooApp(application)
 
 	const fetchNextApp = async () => {
 		// Don't second a second request if the first one is still loading
@@ -66,12 +69,7 @@
 
 	{#if application}
 		<ApplicationView {application} />
-		<GradeInput
-			bind:credential
-			{fetchNextApp}
-			isTripsApp={() => isTripsApp(application)}
-			isCrooApp={() => isCrooApp(application)}
-		/>
+		<GradeInput bind:credential {fetchNextApp} {leader} {croo} />
 	{/if}
 </div>
 

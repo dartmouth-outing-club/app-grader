@@ -1,4 +1,5 @@
 <script>
+	export let name
 	export let rubricItems
 	export let radioValues
 </script>
@@ -14,13 +15,19 @@
 	{#each rubricItems.slice(0, 4) as rubricItem, i}
 		<div class={`rubricItem ${i % 2 == 0 ? 'highlight' : ''}`}>
 			<span class="first-space">{rubricItem}</span>
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={1} />
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={1.5} />
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={2} />
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={2.5} />
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={3} />
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={3.5} />
-			<input required bind:group={radioValues[i]} type="radio" name={rubricItem} value={4} />
+			<input
+				required
+				bind:group={radioValues[i]}
+				type="radio"
+				name={`${name}-${rubricItem}`}
+				value={1}
+			/>
+			<input bind:group={radioValues[i]} type="radio" name={`${name}-${rubricItem}`} value={1.5} />
+			<input bind:group={radioValues[i]} type="radio" name={`${name}-${rubricItem}`} value={2} />
+			<input bind:group={radioValues[i]} type="radio" name={`${name}-${rubricItem}`} value={2.5} />
+			<input bind:group={radioValues[i]} type="radio" name={`${name}-${rubricItem}`} value={3} />
+			<input bind:group={radioValues[i]} type="radio" name={`${name}-${rubricItem}`} value={3.5} />
+			<input bind:group={radioValues[i]} type="radio" name={`${name}-${rubricItem}`} value={4} />
 		</div>
 	{/each}
 </div>

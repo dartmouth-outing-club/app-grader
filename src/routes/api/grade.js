@@ -36,8 +36,12 @@ export async function post(event) {
 	}
 
 	const body = await event.request.json()
-	const { freeResponse, radioValues } = body
-	if (typeof freeResponse !== 'string' || typeof radioValues !== 'object') {
+	const { freeResponse, leaderRubric, crooRubric } = body
+	if (
+		typeof freeResponse !== 'string' ||
+		typeof leaderRubric !== 'object' ||
+		typeof crooRubric !== 'object'
+	) {
 		return INVALID_REQUEST
 	}
 
