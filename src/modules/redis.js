@@ -7,6 +7,7 @@ const USER_NAMESPACE = 'user'
 const GRADE_NAMESPACE = 'grade'
 const LOCKS_SET = 'locks'
 const UNION_STORE_SET = 'locks:u:apps'
+const TO_GRADE_SET = 'apps:tograde'
 const APPS_SET = 'apps'
 
 const LOCK_SECONDS = 1200
@@ -23,6 +24,7 @@ async function initializeClient() {
 
 	const newClient = createClient(process.env.NODE_ENV === 'development' ? DEV_CONFIG : PROD_CONFIG)
 	newClient.on('error', (err) => console.error('Redis Client Error', err))
+	newClient.zRangeStore
 
 	await newClient.connect()
 	console.log('initialized redis')
@@ -77,11 +79,19 @@ async function checkoutRandomApp(user) {
 	const getUnlockedAppReplies = await client
 		.multi()
 		.ZREMRANGEBYSCORE(LOCKS_SET, -Infinity, now.getTime())
-		.ZDIFFSTORE(UNION_STORE_SET, APPS_SET, LOCKS_SET)
+		.ZRANGESTORE(TO_GRADE_SET, APPS_SET, 0, 2, {
+			BY: 'SCORE',
+			LIMIT: {
+				offset: 0,
+				count: 1
+			}
+		})
+		.ZDIFFSTORE(UNION_STORE_SET, TO_GRADE_SET, LOCKS_SET)
 		.ZRANDMEMBER(UNION_STORE_SET)
 		.DEL(UNION_STORE_SET)
+		.DEL(TO_GRADE_SET)
 		.EXEC()
-	const unlockedApplicationId = getUnlockedAppReplies[2]
+	const unlockedApplicationId = getUnlockedAppReplies[3]
 	if (!unlockedApplicationId) {
 		console.log(`All applications locked. Either you forgot to init the db, or we're almost done!`)
 		return null

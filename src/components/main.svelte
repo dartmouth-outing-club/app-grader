@@ -2,6 +2,7 @@
 	import ApplicationView from '../components/applicationView.svelte'
 	import GoogleButton from '../components/googleButton.svelte'
 	import { fetchApplication, passApplication } from '../functions/frontendFetch.js'
+	import { isCrooApp, isTripsApp } from '../functions/trips.js'
 	import GradeInput from './gradeInput.svelte'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
@@ -65,7 +66,12 @@
 
 	{#if application}
 		<ApplicationView {application} />
-		<GradeInput bind:credential {fetchNextApp} />
+		<GradeInput
+			bind:credential
+			{fetchNextApp}
+			isTripsApp={() => isTripsApp(application)}
+			isCrooApp={() => isCrooApp(application)}
+		/>
 	{/if}
 </div>
 
