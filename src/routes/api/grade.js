@@ -4,7 +4,8 @@ import {
 	INVALID_REQUEST,
 	SUCCESS_RES
 } from '../../constants/httpConstants.js'
-import { getUserFromJwt } from '../../modules/clientAuth.js'
+import { getUserFromJwt } from '../../modules/googleClientAuth.js'
+import { addGrade } from '../../modules/googleServiceAcc.js'
 import { submitGrade } from '../../modules/redis.js'
 
 const INTROSPECTION = 'Introspection on Identities and Perspectives'
@@ -46,7 +47,8 @@ export async function post(event) {
 	}
 
 	try {
-		await submitGrade(userId, body)
+		const applicationId = await submitGrade(userId, body)
+		addGrade(userId, applicationId, freeResponse, leaderRubric, crooRubric)
 		return SUCCESS_RES
 	} catch (error) {
 		console.log(error)

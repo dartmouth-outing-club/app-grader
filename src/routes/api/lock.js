@@ -1,4 +1,4 @@
-import { getUserFromJwt } from '../../modules/clientAuth.js'
+import { getUserFromJwt } from '../../modules/googleClientAuth.js'
 import { deleteLock, getApplicationForUser } from '../../modules/redis.js'
 import { ACCESS_DENIED_RES, EMPTY_RES, ERROR_RES } from '../../constants/httpConstants.js'
 

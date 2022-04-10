@@ -224,4 +224,5 @@ export async function submitGrade(user, body) {
 		.ZINCRBY(APPS_SET, 1, applicationId)
 		.EXEC()
 	console.log(results)
+	return applicationId
 }

@@ -44,6 +44,7 @@
 			alert('Grade submitted!')
 			fetchNextApp()
 		}
+		// TODO better API failure response
 	}
 </script>
 

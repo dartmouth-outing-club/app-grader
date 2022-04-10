@@ -2,7 +2,7 @@
  * apps-loader.js - loads the applications sheet into redis
  */
 import { getAllApps } from '../src/functions/sheetFormatting.js'
-import { getSheet } from '../src/modules/serviceAccount.js'
+import { getAppsSheet } from '../src/modules/serviceAccount.js'
 import { loadApplications } from '../src/modules/redis.js'
 
 if (process.argv.length != 3) {
@@ -12,7 +12,7 @@ if (process.argv.length != 3) {
 
 // Get the applications from the google sheet
 const [offset] = process.argv[2]
-const sheet = await getSheet()
+const sheet = await getAppsSheet()
 const applications = getAllApps(sheet, offset)
 console.log(`Pulled ${applications.length} applications`)
 
