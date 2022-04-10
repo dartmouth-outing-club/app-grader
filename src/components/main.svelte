@@ -43,16 +43,24 @@
 	}
 </script>
 
-<h1>DOC Trips Application Grader</h1>
+<h1>First-Year Trips Application Grader</h1>
 <div class="content">
 	<p>
-		Thank you so much for volunteering to grade DOC First Year Trips applications! Trips wouldn't be
-		possible without you.
+		Thank you so much for volunteering to grade First-Year Trips applications! Trips wouldn't be
+		possible without you :)
 	</p>
 	<p>
-		Each application is held for you for 20 minutes. While the applications are anonymous, if you
-		recoginize the applicant based on what they wrote, please click the "skip" button to move on to
-		the next application.
+		While the applications are anonymous, if you recoginize the applicant based on what they wrote,
+		please click the "skip" button to move on to the next application. Please feel free to refer to
+		the <a
+			href="https://docs.google.com/spreadsheets/d/1hSBEwEzFBBBkdl__2ZOc7VC7UKfGumBeQWbBO__ZpJI/edit?usp=sharing"
+			>the grading rubric</a
+		>
+		and
+		<a
+			href="https://docs.google.com/document/d/1g27UScm2uL87dXYcKToJmlKpiNkxqf9uv8Rc4gyZpGQ/edit?usp=sharing"
+			>the training materials</a
+		> at any time while grading.
 	</p>
 	{#if !credential}
 		<p>You will need to sign in using your Dartmouth-provided Google account.</p>
@@ -74,6 +82,11 @@
 </div>
 
 <style>
+	a:visited {
+		text-decoration: none;
+		color: #9d162e;
+	}
+
 	.content {
 		padding: 20px;
 	}
