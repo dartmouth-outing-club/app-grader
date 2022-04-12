@@ -212,8 +212,9 @@ export async function submitGrade(user, body) {
 	await initializeClient()
 	console.log(`User ${user} is submitting a grade.`)
 	const value = JSON.stringify(body)
-	const { applicationId } = await getLockedApp(user)
 
+	// Get stored lock (even if it's expired) because it's the application the user is seeeing
+	const { applicationId } = await getUserStoredLock(user)
 	if (typeof applicationId !== 'string') {
 		throw `Unexpected applicationId ${applicationId}`
 	}
