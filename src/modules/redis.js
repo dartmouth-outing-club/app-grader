@@ -62,7 +62,7 @@ function setApp(application) {
 	return client
 		.multi()
 		.set(`${APP_NAMESPACE}:${id}`, responsesString)
-		.ZADD(APPS_SET, { score: 0, value: id })
+		.ZADD(APPS_SET, { score: 0, value: id }, { NX: true })
 		.EXEC()
 }
 
