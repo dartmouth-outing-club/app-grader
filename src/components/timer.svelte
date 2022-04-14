@@ -8,4 +8,4 @@
 </script>
 
 <h2>Time Remaining</h2>
-<p>You have {time} left to view the application</p>
+<p>You have {time} left to view the application.</p>

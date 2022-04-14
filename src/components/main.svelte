@@ -41,8 +41,13 @@
 			secondsRemaining = body.secondsRemaining
 		} else if (res.status === 204) {
 			message = MESSAGE_204
+			application = null
+		} else if (res.status === 403) {
+			credential = null
+			application = null
 		} else if (res.status === 500) {
 			message = MESSAGE_500
+			application = null
 		}
 
 		document.body.scrollIntoView()
