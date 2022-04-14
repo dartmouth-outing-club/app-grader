@@ -1,14 +1,18 @@
 <script>
+	import { onDestroy, onMount } from 'svelte'
+
 	import ApplicationView from '../components/applicationView.svelte'
 	import GoogleButton from '../components/googleButton.svelte'
+	import GradeInput from './gradeInput.svelte'
+	import Timer from './timer.svelte'
 	import { fetchApplication, passApplication } from '../functions/frontendFetch.js'
 	import { isCrooApp, isLeaderApp } from '../functions/trips.js'
-	import GradeInput from './gradeInput.svelte'
 
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
 	const MESSAGE_500 =
 		'Sorry, something went wrong. Please try again, and contact doc-webadmin@dartmouth.edu if problem persists.'
-	let message, application, credential
+	let message, application, credential, timer
+	let secondsRemaining = 0
 	let loading = false
 
 	$: leader = isLeaderApp(application)
@@ -32,6 +36,7 @@
 		if (res.status === 200) {
 			const body = await res.json()
 			application = body.application
+			secondsRemaining = body.secondsRemaining
 		} else if (res.status === 204) {
 			message = MESSAGE_204
 		} else if (res.status === 500) {
@@ -41,6 +46,16 @@
 		document.body.scrollIntoView()
 		loading = false
 	}
+
+	onMount(() => {
+		timer = setInterval(() => {
+			secondsRemaining -= 1
+		}, 1000)
+	})
+
+	onDestroy(() => {
+		clearInterval(timer)
+	})
 </script>
 
 <h1>First-Year Trips Application Grader</h1>
@@ -76,6 +91,7 @@
 	{/if}
 
 	{#if application}
+		<Timer {secondsRemaining} />
 		<ApplicationView {application} />
 		<GradeInput bind:credential {fetchNextApp} {leader} {croo} />
 	{/if}

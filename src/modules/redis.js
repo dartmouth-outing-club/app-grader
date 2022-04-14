@@ -10,7 +10,7 @@ const UNION_STORE_SET = 'locks:u:apps'
 const TO_GRADE_SET = 'apps:tograde'
 const APPS_SET = 'apps'
 
-const LOCK_SECONDS = 1200
+const LOCK_SECONDS = 1199
 
 // https://devcenter.heroku.com/articles/connecting-heroku-redis#connecting-in-node-js
 const DEV_CONFIG = { url: 'redis://localhost:6379' }
