@@ -11,8 +11,10 @@
 	const MESSAGE_204 = 'No applications available to grade at this moment! Please try again later.'
 	const MESSAGE_500 =
 		'Sorry, something went wrong. Please try again, and contact doc-webadmin@dartmouth.edu if problem persists.'
+	const MESSAGE_EXPIRED = 'Application expired. Please fetch a new one.'
+
 	let message, application, credential, timer
-	let secondsRemaining = 0
+	let secondsRemaining = -1
 	let loading = false
 
 	$: leader = isLeaderApp(application)
@@ -50,6 +52,10 @@
 	onMount(() => {
 		timer = setInterval(() => {
 			secondsRemaining -= 1
+			if (secondsRemaining === 0) {
+				application = null
+				message = MESSAGE_EXPIRED
+			}
 		}, 1000)
 	})
 
@@ -87,7 +93,7 @@
 	{/if}
 
 	{#if message}
-		<p>{message}</p>
+		<h3>{message}</h3>
 	{/if}
 
 	{#if application}
