@@ -1,6 +1,7 @@
 import { createClient } from 'redis'
 import { createFieldsFromResponses } from '../functions/sheetFormatting.js'
 import { REDIS_URL } from './config.js'
+import { GRADERS } from './graders.js'
 
 const APP_NAMESPACE = 'app'
 const USER_NAMESPACE = 'user'
@@ -73,7 +74,11 @@ function setApp(application) {
  */
 async function checkoutRandomApp(user) {
 	const now = new Date()
-	const expireTime = now.getTime() + LOCK_SECONDS * 1000
+
+	// Get time that the application will expire
+	const graderConfig = GRADERS.find(({ id }) => user.toLowerCase() === id.toLowerCase())
+	const secondsToGrade = graderConfig?.secondsToGrade ? graderConfig.secondsToGrade : LOCK_SECONDS
+	const expireTime = now.getTime() + secondsToGrade * 1000
 
 	// Get a random application that is not currently locked
 	const getUnlockedAppReplies = await client
