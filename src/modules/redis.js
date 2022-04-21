@@ -209,7 +209,7 @@ export async function deleteLock(user) {
 		}
 		return Promise.resolve(true)
 	}
-	console.warn(`User ${user} requested to delete a lock, but none found.`)
+	console.log(`User ${user} requested to delete a lock, but none found.`)
 	return Promise.resolve(true)
 }
 
@@ -220,7 +220,7 @@ export async function submitGrade(user, body) {
 
 	// Get stored lock (even if it's expired) because it's the application the user is seeeing
 	const { applicationId } = await getUserStoredLock(user)
-	if (typeof applicationId !== 'string') {
+	if (typeof applicationId !== 'string' || !applicationId) {
 		throw `Unexpected applicationId ${applicationId}`
 	}
 
@@ -230,5 +230,8 @@ export async function submitGrade(user, body) {
 		.ZINCRBY(APPS_SET, 1, applicationId)
 		.EXEC()
 	console.log(results)
+
+	const deleteRes = await deleteLock(user) // Not transaction-safe, fix in rewrite
+	console.log(`Delete result: ${deleteRes}`)
 	return applicationId
 }
