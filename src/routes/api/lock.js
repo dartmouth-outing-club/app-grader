@@ -50,7 +50,7 @@ export async function del(event) {
   try {
     await deleteLock(userId)
     return EMPTY_RES
-  } catch(error) {
+  } catch (error) {
     console.error('Redis error while deleting lock')
     return ERROR_RES
   }

@@ -36,7 +36,6 @@ export async function post(event) {
     return ACCESS_DENIED_RES
   }
 
-
   const body = await event.request.json()
   const { freeResponse, leaderRubric, crooRubric } = body
   if (
