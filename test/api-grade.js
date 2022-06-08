@@ -16,15 +16,11 @@ test('it gets the grader questions', async (t) => {
 
 test('post function', async (t) => {
   // Mock the client dependencies
-  const { post } = await esmock(
-    '../src/routes/api/grade.js',
-    {},
-    {
-      '../src/modules/googleClientAuth.js': { getUserFromJwt: () => 'testuser' },
-      '../src/modules/googleServiceAcc.js': { addGrade: () => {} },
-      '../src/modules/redis.js': { submitGrade: () => 'test-app-id' }
-    }
-  )
+  const { post } = await esmock( '../src/routes/api/grade.js', {}, {
+    '../src/modules/googleClientAuth.js': { getUserFromJwt: () => 'testuser' },
+    '../src/modules/googleServiceAcc.js': { addGrade: () => {} },
+    '../src/modules/redis.js': { submitGrade: () => 'test-app-id' }
+  })
 
   test('it posts a well-formatted grade attempt', async (t) => {
     const body = {
@@ -53,15 +49,11 @@ test('post function', async (t) => {
   })
 
   test('it returns 500 when submitting to redis throws an exception', async (t) => {
-    const { post } = await esmock(
-      '../src/routes/api/grade.js',
-      {},
-      {
-        '../src/modules/googleClientAuth.js': { getUserFromJwt: () => 'testuser' },
-        '../src/modules/googleServiceAcc.js': { addGrade: () => {} },
-        '../src/modules/redis.js': { submitGrade: () => {throw 'Redis exception'}}
-      }
-    )
+    const { post } = await esmock( '../src/routes/api/grade.js', {}, {
+      '../src/modules/googleClientAuth.js': { getUserFromJwt: () => 'testuser' },
+      '../src/modules/googleServiceAcc.js': { addGrade: () => {} },
+      '../src/modules/redis.js': { submitGrade: () => {throw 'Redis exception'}}
+    })
 
     const body = {
       freeResponse: 'This was a good application',
@@ -76,15 +68,11 @@ test('post function', async (t) => {
   })
 
   test('it returns 500 when submitting to google throws an exception', async (t) => {
-    const { post } = await esmock(
-      '../src/routes/api/grade.js',
-      {},
-      {
-        '../src/modules/googleClientAuth.js': { getUserFromJwt: () => 'testuser' },
-        '../src/modules/googleServiceAcc.js': { addGrade: () => {throw 'Google error'} },
-        '../src/modules/redis.js': { submitGrade: () => 'test-app-id'}
-      }
-    )
+    const { post } = await esmock( '../src/routes/api/grade.js', {}, {
+      '../src/modules/googleClientAuth.js': { getUserFromJwt: () => 'testuser' },
+      '../src/modules/googleServiceAcc.js': { addGrade: () => {throw 'Google error'} },
+      '../src/modules/redis.js': { submitGrade: () => 'test-app-id'}
+    })
 
     const body = {
       freeResponse: 'This was a good application',

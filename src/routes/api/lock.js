@@ -47,6 +47,11 @@ export async function del(event) {
     return ACCESS_DENIED_RES
   }
   console.log(`Deleting lock for ${userId}`)
-  await deleteLock(userId)
-  return EMPTY_RES
+  try {
+    await deleteLock(userId)
+    return EMPTY_RES
+  } catch(error) {
+    console.error('Redis error while deleting lock')
+    return ERROR_RES
+  }
 }
