@@ -1,8 +1,8 @@
 export const ERROR_RES = {
-	status: 500,
-	body: {
-		message: 'Sorry, something went wrong. Please try again later.'
-	}
+  status: 500,
+  body: {
+    message: 'Sorry, something went wrong. Please try again later.'
+  }
 }
 export const SUCCESS_RES = { status: 200 }
 export const EMPTY_RES = { status: 204 }

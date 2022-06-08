@@ -6,8 +6,8 @@ import { getAppsSheet } from '../src/modules/googleServiceAcc.js'
 import { loadApplications } from '../src/modules/redis.js'
 
 if (process.argv.length != 3) {
-	console.error('Usage: node apps-loader.js [SHEET OFFSET]')
-	process.exit(1)
+  console.error('Usage: node apps-loader.js [SHEET OFFSET]')
+  process.exit(1)
 }
 
 // Get the applications from the google sheet
