@@ -1,8 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mock, GOOGLE_CLIENT_AUTH, REDIS, GOOGLE_SERVICE } from './mocker.js'
+import { mock, GOOGLE_CLIENT_AUTH, REDIS, GOOGLE_SERVICE } from '../../../test/mocker.js'
 
-import { get } from '../src/routes/api/grade.js'
+import { get } from './grade.js'
 
 test('it gets the grader questions', async (t) => {
   const response = await get()

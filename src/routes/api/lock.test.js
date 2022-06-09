@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mock, GOOGLE_CLIENT_AUTH, REDIS } from './mocker.js'
+import { mock, GOOGLE_CLIENT_AUTH, REDIS } from '../../../test/mocker.js'
 
 test('DELETE request', async (t) => {
   test('throws 403 for unverified user', async () => {
