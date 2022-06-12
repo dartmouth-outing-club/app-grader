@@ -7,3 +7,7 @@ export const REDIS = '../src/modules/redis.js'
 export const mock = async (route, mocks) => {
   return esmock(route, {}, mocks)
 }
+
+export const throwsException = () => {
+  throw 'Expected exception'
+}

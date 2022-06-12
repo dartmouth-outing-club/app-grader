@@ -14,10 +14,10 @@ const MENTORSHIP = 'Mentorship, Group Dynamics'
 const LEADERSHIP = 'Leadership, Teamwork'
 const TEXT_QUESTION =
   'Please record your overall thoughts and summary of this application, including comments on any relevant experiences or anecdotes. If applicable, please note if/how the applicant is better qualified to be a Trip Leader or Crooling. Write at least 350 characters in your summary.'
+const questions = [INTROSPECTION, REFLECTION, MENTORSHIP, LEADERSHIP, TEXT_QUESTION]
 
 /** Get the questions for the grading form */
 export async function get() {
-  const questions = [INTROSPECTION, REFLECTION, MENTORSHIP, LEADERSHIP, TEXT_QUESTION]
   return {
     status: 200,
     body: JSON.stringify(questions),
