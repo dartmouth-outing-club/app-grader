@@ -8,7 +8,7 @@
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
     "start": "node build",
-    "init-db": "NODE_ENV=development node scripts/apps-loader.js",
+    "init-db": "sqlite3 app-grader.db '.read scripts/init-db.sql' && NODE_ENV=development node scripts/apps-loader.js 1",
     "test": "node --test --loader=esmock",
     "package": "svelte-kit package",
     "preview": "svelte-kit preview",
@@ -30,9 +30,9 @@
   },
   "type": "module",
   "dependencies": {
+    "better-sqlite3": "^7.5.3",
     "dotenv": "^16.0.0",
     "google-auth-library": "^7.14.1",
-    "googleapis": "^99.0.0",
-    "redis": "^4.0.6"
+    "googleapis": "^99.0.0"
   }
 }

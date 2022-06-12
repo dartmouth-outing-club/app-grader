@@ -10,3 +10,4 @@ jwt.keys.json
 app-config.json
 client-oauth.json
 dump.rdb
+*.db*

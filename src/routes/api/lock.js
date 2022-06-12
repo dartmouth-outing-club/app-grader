@@ -1,5 +1,5 @@
 import { getUserFromJwt } from '../../modules/googleClientAuth.js'
-import { deleteLock, getApplicationForUser } from '../../modules/redis.js'
+import { deleteLock, getApplicationForUser } from '../../modules/sqlite-accessor.js'
 import { ACCESS_DENIED_RES, EMPTY_RES, ERROR_RES } from '../../constants/httpConstants.js'
 
 export async function post(event) {
@@ -14,7 +14,7 @@ export async function post(event) {
   // Attempt to get an application for the user
   let application
   try {
-    application = await getApplicationForUser(userId)
+    application = getApplicationForUser(userId)
   } catch (err) {
     console.error(err)
     return ERROR_RES
@@ -48,7 +48,7 @@ export async function del(event) {
   }
   console.log(`Deleting lock for ${userId}`)
   try {
-    await deleteLock(userId)
+    deleteLock(userId)
     return EMPTY_RES
   } catch (error) {
     console.error('Redis error while deleting lock')

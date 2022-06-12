@@ -25,10 +25,8 @@ This allows the app to map a question to the appropriate column, even if the for
 
 To load this config file into the application, it needs to be compressed into a one-line environment variable. A helper script, `scripts/generate-env-vars.js`, can do this for you: if the config file has been saved as `app-config.json` in the `/configs` directory, the script will create a `.env` file in the home directory with the config in it.
 
-## Redis
+## Database
 
-TODO: Write about redis architecture
+TODO: Write about SQLite architecture
 
-The first time you run redis, you'll need to load the applications into the database. The script for this is in the `scripts` directory and can be run with `node scripts/apps-loader.js [OFFSET NUM]`, where `[OFFSET NUM]` is the number of rows at the beginning of the sheet to exclude (headers and such). Running that command requires that the `GOOGLE_SERVICE_KEY` and `GOOGLE_SERVICE_PRIVATE_KEY` env vars be in the current shell session.
-
-For Heroku, where this is currently deployed, you can create a one-off dyno to run the script with `heroku run node scripts/apps-loader.js [OFFSET NUM]`. A similar method is used in production to fetch new apps occasionally, which may have gotten an extension.
+The first time you run the app, you'll need to load the applications into the database. The script for this is in the `scripts` directory and can be run with `node scripts/apps-loader.js [OFFSET NUM]`, where `[OFFSET NUM]` is the number of rows at the beginning of the sheet to exclude (headers and such). Running that command requires that the `GOOGLE_SERVICE_KEY` and `GOOGLE_SERVICE_PRIVATE_KEY` env vars be in the current shell session.

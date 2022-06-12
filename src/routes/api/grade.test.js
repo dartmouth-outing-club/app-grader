@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import {
   mock,
   GOOGLE_CLIENT_AUTH,
-  REDIS,
+  SQLITE,
   GOOGLE_SERVICE,
   throwsException
 } from '../../../test/mocker.js'
@@ -32,7 +32,7 @@ test('POST /api/grade', async (t) => {
   const { post } = await mock('../src/routes/api/grade.js', {
     [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
     [GOOGLE_SERVICE]: { addGrade: () => {} },
-    [REDIS]: { submitGrade: () => 'test-app-id' }
+    [SQLITE]: { submitGrade: () => 'test-app-id' }
   })
 
   test('it posts a well-formatted grade attempt', async (t) => {
@@ -63,7 +63,7 @@ test('POST /api/grade', async (t) => {
     const { post } = await mock('../src/routes/api/grade.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [GOOGLE_SERVICE]: { addGrade: () => {} },
-      [REDIS]: { submitGrade: throwsException }
+      [SQLITE]: { submitGrade: throwsException }
     })
 
     const body = {
@@ -81,7 +81,7 @@ test('POST /api/grade', async (t) => {
     const { post } = await mock('../src/routes/api/grade.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [GOOGLE_SERVICE]: { addGrade: throwsException },
-      [REDIS]: { submitGrade: () => {} }
+      [SQLITE]: { submitGrade: () => {} }
     })
 
     const body = {

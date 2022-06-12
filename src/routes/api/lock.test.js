@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mock, GOOGLE_CLIENT_AUTH, REDIS, throwsException } from '../../../test/mocker.js'
+import { mock, GOOGLE_CLIENT_AUTH, SQLITE, throwsException } from '../../../test/mocker.js'
 
 test('POST /api/lock', async (t) => {
   test('it responds with 403 for unverified user', async () => {
@@ -14,7 +14,7 @@ test('POST /api/lock', async (t) => {
   test('it responds with 500 if getApplicationForUser throws an exception', async () => {
     const { post } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
-      [REDIS]: { getApplicationForUser: throwsException }
+      [SQLITE]: { getApplicationForUser: throwsException }
     })
     const res = await post()
     assert.equal(res.status, 500)
@@ -23,7 +23,7 @@ test('POST /api/lock', async (t) => {
   test('it responds with 204 if getApplicationForUser returns empty applicationId', async () => {
     const { post } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
-      [REDIS]: { getApplicationForUser: () => ({}) }
+      [SQLITE]: { getApplicationForUser: () => ({}) }
     })
     const res = await post()
     assert.equal(res.status, 204)
@@ -39,7 +39,7 @@ test('POST /api/lock', async (t) => {
     }
     const { post } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
-      [REDIS]: { getApplicationForUser: () => application }
+      [SQLITE]: { getApplicationForUser: () => application }
     })
 
     const res = await post()
@@ -64,7 +64,7 @@ test('DELETE /api/lock', async (t) => {
   test('it responds with 500 on redis error', async () => {
     const { del } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
-      [REDIS]: { deleteLock: throwsException }
+      [SQLITE]: { deleteLock: throwsException }
     })
 
     const res = await del('testuser')
@@ -74,7 +74,7 @@ test('DELETE /api/lock', async (t) => {
   test('it responds with 204 on a successful delete', async () => {
     const { del } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
-      [REDIS]: { deleteLock: () => {} }
+      [SQLITE]: { deleteLock: () => {} }
     })
 
     const res = await del('testuser')

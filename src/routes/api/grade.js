@@ -6,7 +6,7 @@ import {
 } from '../../constants/httpConstants.js'
 import { getUserFromJwt } from '../../modules/googleClientAuth.js'
 import { addGrade } from '../../modules/googleServiceAcc.js'
-import { submitGrade } from '../../modules/redis.js'
+import { submitGrade } from '../../modules/sqlite-accessor.js'
 
 const INTROSPECTION = 'Introspection on Identities and Perspectives'
 const REFLECTION = 'Reflection and Critical Thought'
@@ -47,7 +47,7 @@ export async function post(event) {
   }
 
   try {
-    const applicationId = await submitGrade(userId, body)
+    const applicationId = submitGrade(userId, body)
     addGrade(userId, applicationId, freeResponse, leaderRubric, crooRubric)
     return SUCCESS_RES
   } catch (error) {
