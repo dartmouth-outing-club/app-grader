@@ -1,5 +1,5 @@
 /**
- * apps-loader.js - loads the applications sheet into redis
+ * apps-loader.js - loads the applications sheet into the database
  */
 import { getAllApps } from '../src/functions/sheetFormatting.js'
 import { getAppsSheet } from '../src/modules/googleServiceAcc.js'
@@ -16,7 +16,7 @@ const sheet = await getAppsSheet()
 const applications = getAllApps(sheet, offset)
 console.log(`Pulled ${applications.length} applications`)
 
-// Load the applications into redis
+// Load the applications into SQLite
 const responses = loadApplications(applications)
 console.log('sqlite responses:', ...responses)
 process.exit(0)
