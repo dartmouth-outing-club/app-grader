@@ -2,7 +2,7 @@ import { getUserFromJwt } from '../../modules/googleClientAuth.js'
 import { deleteLock, getApplicationForUser } from '../../modules/sqlite-accessor.js'
 import { ACCESS_DENIED_RES, EMPTY_RES, ERROR_RES } from '../../constants/httpConstants.js'
 
-export async function post(event) {
+export async function post (event) {
   // Verify user's JWT
   let userId
   try {
@@ -38,7 +38,7 @@ export async function post(event) {
   }
 }
 
-export async function del(event) {
+export async function del (event) {
   // Verify user's JWT
   let userId
   try {

@@ -17,7 +17,7 @@ const TEXT_QUESTION =
 const questions = [INTROSPECTION, REFLECTION, MENTORSHIP, LEADERSHIP, TEXT_QUESTION]
 
 /** Get the questions for the grading form */
-export async function get() {
+export async function get () {
   return {
     status: 200,
     body: JSON.stringify(questions),
@@ -27,7 +27,7 @@ export async function get() {
   }
 }
 
-export async function post(event) {
+export async function post (event) {
   // Verify user's JWT
   let userId
   try {

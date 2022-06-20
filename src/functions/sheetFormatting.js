@@ -13,18 +13,18 @@ const progressIndex = APP_CONFIG.progressColumn
  * @param {string} letter
  * @returns the array index at which that column can be found
  */
-function columnLetterToArrayIndex(letter) {
+function columnLetterToArrayIndex (letter) {
   // https://stackoverflow.com/questions/21229180/convert-column-index-into-corresponding-column-letter/21231012#21231012
-  var column = 0,
-    length = letter.length
-  for (var i = 0; i < length; i++) {
+  let column = 0
+  const length = letter.length
+  for (let i = 0; i < length; i++) {
     column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1)
   }
   return column - 1
 }
 
 /** Get the the application questions from the APP_CONFIG file */
-function getQuestions() {
+function getQuestions () {
   return APP_CONFIG.questions.map((item) => item.prompt)
 }
 
@@ -36,7 +36,7 @@ function getQuestions() {
  * @param sheet a single sheet from a Google Sheets V4 API
  * @returns the first row (headers) of the columns denoted in the APP_CONFIG file
  */
-export function getHeaders(sheet) {
+export function getHeaders (sheet) {
   // Get the first row from the rowData
   let headerRow
   try {
@@ -55,14 +55,14 @@ export function getHeaders(sheet) {
   return headers
 }
 
-export function isComplete(row) {
+export function isComplete (row) {
   if (!progressIndex) {
     throw 'Error: checking for completeness but no progress index is defined in the APP_CONFIG file'
   }
   return row.values[progressIndex].userEnteredValue?.numberValue === 100
 }
 
-export function convertSheetRowToApplication(row) {
+export function convertSheetRowToApplication (row) {
   // Get the fields specified in the APP_CONFIG file
   const responses = indices
     .map((index) => row.values[index]) // Get the value each index (might be undefined)
@@ -74,7 +74,7 @@ export function convertSheetRowToApplication(row) {
   return { responses, applicationId }
 }
 
-export function getAllApps(sheet, offset = 1, onlyComplete = true) {
+export function getAllApps (sheet, offset = 1, onlyComplete = true) {
   try {
     const rowData = sheet.data[0].rowData
     return rowData
@@ -94,7 +94,7 @@ export function getAllApps(sheet, offset = 1, onlyComplete = true) {
  * When retrieve this responses from the database, we zip together the array of questions and
  * the array of responses into a more semantic { question, response } object.
  */
-export function createFieldsFromResponses(responses) {
+export function createFieldsFromResponses (responses) {
   const questions = getQuestions()
   return questions.map((question, index) => ({
     question,

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-function safeParse(varName) {
+function safeParse (varName) {
   try {
     return JSON.parse(process.env[varName])
   } catch (error) {

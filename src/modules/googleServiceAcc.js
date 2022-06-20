@@ -9,13 +9,13 @@ const GRADING_SHEET_TITLE = 'grades'
 // Store current authenticated accessor in the module. This gets created once, on import.
 let sheets
 
-function sleepSeconds(seconds) {
+function sleepSeconds (seconds) {
   return new Promise((resolve) => {
     setTimeout(resolve, seconds * 1000)
   })
 }
 
-async function setToken() {
+async function setToken () {
   const auth = new google.auth.GoogleAuth({
     credentials: GOOGLE_SERVICE_KEY,
     scopes: [SPREADSHEET_AUTH_SCOPE]
@@ -34,7 +34,7 @@ async function setToken() {
  * This function lets us write all the other functions assuming that the `sheets` variable
  * exists and is authenticated, then ehance those functions with retry and login logic.
  */
-function enhanceWithRetries(func, retries) {
+function enhanceWithRetries (func, retries) {
   return async (...params) => {
     if (!sheets) {
       await setToken()
@@ -63,7 +63,7 @@ function enhanceWithRetries(func, retries) {
   }
 }
 
-async function getSheet(sheetTitle) {
+async function getSheet (sheetTitle) {
   // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets
   let applicationsSheet
   const res = await sheets.spreadsheets.get({
@@ -81,7 +81,7 @@ async function getSheet(sheetTitle) {
  * Retrieve the google sheet with all the applications on it.
  * @returns a google sheet
  */
-async function getApplicationsSheet() {
+async function getApplicationsSheet () {
   return getSheet(APPLICATIONS_SHEET_TITLE)
 }
 
@@ -93,7 +93,7 @@ async function getApplicationsSheet() {
  * @param crooRubric the list of scores assigned for croo questiosn
  * @param freeResponse the qualitative grade of the application
  */
-async function addGradeToGradingSheet(
+async function addGradeToGradingSheet (
   graderId,
   applicationId,
   freeResponse,

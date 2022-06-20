@@ -8,13 +8,13 @@ const db = new Database('./app-grader.db')
 db.pragma('journal_mode = WAL')
 db.pragma('foreign_keys = ON')
 
-function getSecondsRemaining(expireTime) {
+function getSecondsRemaining (expireTime) {
   const now = new Date()
   const secondsRemaining = (expireTime - now.getTime()) / 1000
   return secondsRemaining.toFixed()
 }
 
-function getUserStoredLock(user) {
+function getUserStoredLock (user) {
   const lock = db
     .prepare('SELECT application_id, expire_time from locks where grader_id = ?')
     .get(user)
@@ -33,7 +33,7 @@ function getUserStoredLock(user) {
  * @param user an id string for the user checking out the app
  * @returns an { applicationId, expireTime } object
  */
-function checkoutRandomApp(user) {
+function checkoutRandomApp (user) {
   const now = new Date()
 
   // Get time that the application will expire
@@ -60,7 +60,7 @@ function checkoutRandomApp(user) {
     .get(now.getTime())
 
   if (!application) {
-    console.log(`All applications locked. Either you forgot to init the db, or we're almost done!`)
+    console.log('All applications locked. Either you forgot to init the db, or we\'re almost done!')
     return null
   }
   const applicationId = application.id
@@ -83,7 +83,7 @@ function checkoutRandomApp(user) {
  * @param user an id string for the user checking out the app
  * @returns an application object if the user has a lock, null otherwise
  */
-function getLockedApp(user) {
+function getLockedApp (user) {
   // Check if user has app checked out and if they still have the lock on it
   const { applicationId, expireTime } = getUserStoredLock(user)
 
@@ -101,7 +101,7 @@ function getLockedApp(user) {
   return { applicationId, expireTime }
 }
 
-function getLockedAppOrCheckoutRandom(user) {
+function getLockedAppOrCheckoutRandom (user) {
   // Get locked application if one exists
   const application = getLockedApp(user)
   if (application) {
@@ -120,7 +120,7 @@ function getLockedAppOrCheckoutRandom(user) {
   return { applicationId, expireTime }
 }
 
-export function getApplicationForUser(user) {
+export function getApplicationForUser (user) {
   if (!user) {
     throw `Invalid argument: provided user was ${user}`
   }
@@ -137,7 +137,7 @@ export function getApplicationForUser(user) {
   }
 }
 
-export function loadApplications(applications) {
+export function loadApplications (applications) {
   return applications.map((application) => {
     const id = application.applicationId
     const application_json = JSON.stringify(application.responses)
@@ -154,14 +154,14 @@ export function loadApplications(applications) {
   })
 }
 
-export function deleteLock(user) {
+export function deleteLock (user) {
   const { changes } = db.prepare('DELETE FROM locks WHERE grader_id = ?').run(user)
   if (changes === 0) {
     console.log(`User ${user} requested to delete a lock, but none found.`)
   }
 }
 
-export function submitGrade(user, body) {
+export function submitGrade (user, body) {
   // Get stored lock (even if it's expired)
   const { applicationId } = getUserStoredLock(user)
   if (typeof applicationId !== 'string' || !applicationId) {
