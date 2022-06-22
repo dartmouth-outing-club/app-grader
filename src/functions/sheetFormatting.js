@@ -43,7 +43,7 @@ export function getHeaders (sheet) {
     headerRow = sheet.data[0].rowData[0]
   } catch (error) {
     console.error(error)
-    throw 'Missing/improperly formatted header row'
+    throw new Error('Missing/improperly formatted header row')
   }
 
   // Get the headers specificed in the APP_CONFIG file
@@ -57,7 +57,7 @@ export function getHeaders (sheet) {
 
 export function isComplete (row) {
   if (!progressIndex) {
-    throw 'Error: checking for completeness but no progress index is defined in the APP_CONFIG file'
+    throw new Error('Error: checking for completeness but no progress index is defined in the APP_CONFIG file')
   }
   return row.values[progressIndex].userEnteredValue?.numberValue === 100
 }
@@ -83,7 +83,7 @@ export function getAllApps (sheet, offset = 1, onlyComplete = true) {
       .map(convertSheetRowToApplication)
   } catch (error) {
     console.error(error)
-    throw 'Unable to retrieve the applications'
+    throw new Error('Unable to retrieve the applications')
   }
 }
 

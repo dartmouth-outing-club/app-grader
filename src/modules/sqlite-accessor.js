@@ -122,16 +122,16 @@ function getLockedAppOrCheckoutRandom (user) {
 
 export function getApplicationForUser (user) {
   if (!user) {
-    throw `Invalid argument: provided user was ${user}`
+    throw new Error(`Invalid argument: provided user was ${user}`)
   }
 
   const { applicationId, expireTime } = getLockedAppOrCheckoutRandom(user)
-  const { application_json } = db
+  const applicationJson = db.application_json
     .prepare('SELECT application_json FROM applications WHERE id = ?')
     .get(applicationId)
 
   return {
-    fields: createFieldsFromResponses(JSON.parse(application_json)),
+    fields: createFieldsFromResponses(JSON.parse(applicationJson)),
     applicationId,
     secondsRemaining: getSecondsRemaining(expireTime)
   }
@@ -140,7 +140,7 @@ export function getApplicationForUser (user) {
 export function loadApplications (applications) {
   return applications.map((application) => {
     const id = application.applicationId
-    const application_json = JSON.stringify(application.responses)
+    const applicationJson = JSON.stringify(application.responses)
     return db
       .prepare(
         `
@@ -148,9 +148,9 @@ export function loadApplications (applications) {
       ON CONFLICT (id)
         DO UPDATE SET application_json=excluded.application_json`,
         id,
-        application_json
+        applicationJson
       )
-      .run(id, application_json)
+      .run(id, applicationJson)
   })
 }
 
@@ -165,7 +165,7 @@ export function submitGrade (user, body) {
   // Get stored lock (even if it's expired)
   const { applicationId } = getUserStoredLock(user)
   if (typeof applicationId !== 'string' || !applicationId) {
-    throw `Unexpected applicationId ${applicationId}`
+    throw new Error(`Unexpected applicationId ${applicationId}`)
   }
   JSON.stringify(body)
   db.prepare('INSERT INTO grades (grader_id, application_id, grade_json) VALUES (?, ?, ?)').run(

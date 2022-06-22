@@ -34,6 +34,6 @@ export async function getUserFromJwt (event) {
   } catch (err) {
     console.warn(`Invalid JWT provided by ${event.clientAddress}`)
     console.warn(err)
-    throw 'ACCESS_DENIED'
+    throw new Error('ACCESS_DENIED')
   }
 }

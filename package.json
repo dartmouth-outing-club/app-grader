@@ -9,7 +9,7 @@
     "build": "svelte-kit build",
     "start": "node build",
     "init-db": "sqlite3 app-grader.db '.read scripts/init-db.sql' && NODE_ENV=development node scripts/apps-loader.js 1",
-    "test": "node --test --loader=esmock",
+    "test": "standard && node --test --loader=esmock",
     "package": "svelte-kit package",
     "preview": "svelte-kit preview",
     "prepare": "svelte-kit sync",

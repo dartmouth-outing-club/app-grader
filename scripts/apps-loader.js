@@ -5,7 +5,7 @@ import { getAllApps } from '../src/functions/sheetFormatting.js'
 import { getAppsSheet } from '../src/modules/googleServiceAcc.js'
 import { loadApplications } from '../src/modules/sqlite-accessor.js'
 
-if (process.argv.length != 3) {
+if (process.argv.length !== 3) {
   console.error('Usage: node apps-loader.js [SHEET OFFSET]')
   process.exit(1)
 }

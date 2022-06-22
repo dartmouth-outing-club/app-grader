@@ -59,21 +59,19 @@ function enhanceWithRetries (func, retries) {
       triesLeft -= 1
     }
 
-    throw `Attempting to call ${func} failed ${retries} time(s).`
+    throw new Error(`Attempting to call ${func} failed ${retries} time(s).`)
   }
 }
 
 async function getSheet (sheetTitle) {
   // https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/sheets
-  let applicationsSheet
   const res = await sheets.spreadsheets.get({
     spreadsheetId: APPLICATIONS_SPREADSHEET_ID,
     includeGridData: true
   })
 
   // Get the sheet with the applicants
-  // console.debug(`Retrieved ${res.data.sheets.length} sheets`)
-  applicationsSheet = res.data.sheets.find((sheet) => sheet.properties.title === sheetTitle)
+  const applicationsSheet = res.data.sheets.find((sheet) => sheet.properties.title === sheetTitle)
 
   return applicationsSheet
 }

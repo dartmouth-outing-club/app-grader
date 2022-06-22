@@ -15,6 +15,7 @@ const serviceKey = JSON.parse(fs.readFileSync(SERVICE_KEY_FP).toString())
 const appConfig = JSON.parse(fs.readFileSync(APP_CONFIG_FP).toString())
 const clientKey = JSON.parse(fs.readFileSync(CLIENT_OAUTH_FP).toString())
 
+/* eslint-disable camelcase */
 const { private_key, ...restOfServiceKey } = serviceKey
 const frontendClientId = clientKey.web.client_id
 

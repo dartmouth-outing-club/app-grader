@@ -9,5 +9,5 @@ export const mock = async (route, mocks) => {
 }
 
 export const throwsException = () => {
-  throw 'Expected exception'
+  throw new Error('Expected exception')
 }
