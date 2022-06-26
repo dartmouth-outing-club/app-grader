@@ -126,9 +126,10 @@ export function getApplicationForUser (user) {
   }
 
   const { applicationId, expireTime } = getLockedAppOrCheckoutRandom(user)
-  const applicationJson = db.application_json
+  const applicationJson = db
     .prepare('SELECT application_json FROM applications WHERE id = ?')
     .get(applicationId)
+    .application_json
 
   return {
     fields: createFieldsFromResponses(JSON.parse(applicationJson)),
