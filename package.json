@@ -24,7 +24,7 @@
   },
   "type": "module",
   "dependencies": {
-    "better-sqlite3": "^7.5.3",
+    "better-sqlite3": "^8.0.0",
     "dotenv": "^16.0.0",
     "google-auth-library": "^7.14.1",
     "googleapis": "^99.0.0"
