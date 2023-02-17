@@ -117,6 +117,12 @@ async function addGradeToGradingSheet (
     resource: { values: [values] }
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Mocked send to google sheet')
+    console.log(JSON.stringify(request))
+    return
+  }
+
   try {
     const response = (await sheets.spreadsheets.values.append(request)).data
     // TODO: Change code below to process the `response` object:

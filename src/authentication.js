@@ -13,7 +13,10 @@ export async function getUser (req, res, next) {
 export async function requireUser (req, res, next) {
   const jwt = getGoogleAuthCookie(req)
   req.user = await getUserFromJwt(jwt)
-  if (!req.user) return res.sendStatus(401)
+  if (!req.user) {
+    res.set('HX-Refresh', 'true') // Refresh the page to give the user a change to login again
+    return res.sendStatus(401)
+  }
   return next()
 }
 
@@ -47,8 +50,7 @@ async function getUserFromJwt (token) {
     // const domain = payload['hd'];
    return userid
   } catch (err) {
-    console.warn(`Invalid JWT ${token}`)
-    console.warn(err)
+    console.warn(err.message)
     return undefined
   }
 }

@@ -18,16 +18,12 @@ export function renderApplication(res, application) {
   res.render('application.njk', { fields, timeRemaining, questions, leader_app, croo_app })
 }
 
-export function renderSecondsSpan (res, application) {
-  const secondsRemaining = application?.secondsRemaining
-  if (!secondsRemaining || secondsRemaining < 1) {
-    res.set('HX-Refresh', 'true')
-    return res.sendStatus(200)
-  }
+export function renderSecondsSpan (res, secondsRemaining) {
   const timeRemaining = getTimeRemaining(secondsRemaining)
   res.render('seconds-span.njk', { timeRemaining })
 }
 
 function getTimeRemaining (seconds) {
-  return seconds > 60 ? `${Math.floor(seconds / 60)} minutes` : `${seconds} seconds`
+  const text = seconds > 60 ? `${Math.floor(seconds / 60)} minutes` : `${seconds} seconds`
+  return { text, seconds }
 }

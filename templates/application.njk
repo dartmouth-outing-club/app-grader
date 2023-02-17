@@ -18,7 +18,7 @@ You have {% include 'seconds-span.njk' %} left to view the application.
 
 <h2>Grading</h2>
 <div class="grading-form">
-<form hx-post=/grade hx-swap=outerHTML>
+<form hx-post=/grade hx-swap="outerHTML show:top">
   {%if leader_app %}
   <h3>Leader rubric</h3>
   <table class="rubric-radio">

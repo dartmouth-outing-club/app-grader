@@ -134,9 +134,7 @@ function getLockedAppOrCheckoutRandom (user) {
 }
 
 export function getApplicationForUser (user) {
-  if (!user) {
-    throw new Error(`Invalid argument: provided user was ${user}`)
-  }
+  if (!user) throw new Error(`Invalid argument: provided user was ${user}`)
 
   const { applicationId, expireTime } = getLockedAppOrCheckoutRandom(user)
   const applicationJson = db
@@ -149,6 +147,12 @@ export function getApplicationForUser (user) {
     applicationId,
     secondsRemaining: getSecondsRemaining(expireTime)
   }
+}
+
+export function getSecondsRemainingForLock (user) {
+  if (!user) throw new Error(`Invalid argument: provided user was ${user}`)
+  const expireTime = getLockedApp(user)?.expireTime
+  return expireTime ? getSecondsRemaining(expireTime) : 0
 }
 
 export function loadApplications (applications) {
