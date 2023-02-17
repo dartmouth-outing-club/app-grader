@@ -1,0 +1,114 @@
+/* https://communications.dartmouth.edu/visual-identity/design-elements/color-palette */
+body {
+  background-color: #ffffff;
+  margin: 0px;
+  padding: 0px;
+}
+
+button {
+  width: 183px;
+  height: 38px;
+  color: #ffffff;
+  background-color: #00693e;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #12312b;
+}
+
+
+a:visited {
+  text-decoration: none;
+  color: #9d162e;
+}
+
+.content {
+  padding: 20px;
+}
+
+h1 {
+  background-color: #00693e;
+  padding: 20px;
+  margin: 0px;
+  color: #ffffff;
+}
+
+.app-fields {
+  margin-top: 20px;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  border-radius: 5px;
+  border-color: #00693e;
+  border-style: solid;
+}
+
+.no-response {
+  color: gray;
+}
+
+.grading-form {
+  border-radius: 5px;
+  border-color: #00693e;
+  border-style: solid;
+  padding: 10px;
+}
+
+.grading-form > * {
+  margin-top: 20px;
+}
+
+.grading-form form {
+  max-width: 900px;
+}
+
+.free-response {
+  margin-top: 30px;
+  width: 90%;
+}
+
+.grading-form textarea {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-height: 130px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.grading-form button {
+  margin-top: 10px;
+}
+
+.rubric-radio .first-space {
+  width: 310px;
+}
+
+.rubric-radio .headers {
+  display: flex;
+  flex-direction: row;
+}
+
+/* The header width needs to be 2x the input */
+.rubric-radio .header {
+  width: 140px;
+}
+
+.rubric-radio input[type='radio'] {
+  width: 70px;
+  margin: 0px;
+  height: 20px;
+}
+
+table.rubric-radio {
+  display: grid;
+  border-collapse: collapse;
+}
+
+.rubric-radio .highlight {
+  background-color: #e2e2e2;
+}
+

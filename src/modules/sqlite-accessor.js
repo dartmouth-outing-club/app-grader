@@ -4,9 +4,27 @@ import { GRADERS } from './graders.js'
 
 const LOCK_SECONDS = 1199
 
-const db = new Database('./app-grader.db')
-db.pragma('journal_mode = WAL')
-db.pragma('foreign_keys = ON')
+let db
+export function start (name) {
+  if (db !== undefined) throw new Error('ERROR: tried to start sqlite db that was already running')
+
+  const dbName = name || ':memory:'
+  try {
+    db = new Database(dbName, { fileMustExist: true })
+  } catch (err) {
+    if (err.code === 'SQLITE_CANTOPEN') {
+      console.error(err)
+      throw new Error(`Failed to open db ${dbName}. Did you remember to initialize the database?`)
+    }
+  }
+  db.pragma('journal_mode = WAL')
+  db.pragma('foreign_keys = ON')
+}
+
+export function stop () {
+  db.close()
+  db = undefined
+}
 
 function getSecondsRemaining (expireTime) {
   const now = new Date()
@@ -39,12 +57,11 @@ function checkoutRandomApp (user) {
   // Get time that the application will expire
   const graderConfig = GRADERS.find(({ id }) => user.toLowerCase() === id.toLowerCase())
   const secondsToGrade = graderConfig?.secondsToGrade ? graderConfig.secondsToGrade : LOCK_SECONDS
-  const expireTime = now.getTime() + secondsToGrade * 1000
+  const expireTime = now.getTime() + (secondsToGrade * 1000)
 
   // Get a random application that is not currently locked and has fewer than 3 grades
   const application = db
-    .prepare(
-      `
+    .prepare(`
     SELECT id, expire_time, IFNULL(num_grades_nullable, 0) as num_grades
     FROM applications
     LEFT JOIN locks on id = locks.application_id
@@ -55,8 +72,7 @@ function checkoutRandomApp (user) {
     ) as grades_count on id = grades_count.application_id
     WHERE num_grades < 3 AND (expire_time IS NULL or expire_time < ?)
     ORDER BY RANDOM()
-  `
-    )
+  `)
     .get(now.getTime())
 
   if (!application) {
@@ -68,12 +84,9 @@ function checkoutRandomApp (user) {
 
   // Because there are no pauses in the function, we don't have to worry that another thread
   // has retrieved the application and is waiting to lock it.
-  db.prepare('DELETE FROM locks WHERE application_id = ?').run(applicationId)
-  db.prepare('INSERT INTO locks (grader_id, application_id, expire_time) VALUES (?, ?, ?)').run(
-    user,
-    applicationId,
-    expireTime
-  )
+  db.prepare(
+    'INSERT OR REPLACE INTO locks (grader_id, application_id, expire_time) VALUES (?, ?, ?)'
+  ).run(user, applicationId, expireTime)
 
   return { applicationId, expireTime }
 }
@@ -142,37 +155,29 @@ export function loadApplications (applications) {
   return applications.map((application) => {
     const id = application.applicationId
     const applicationJson = JSON.stringify(application.responses)
-    return db
-      .prepare(
-        `
-      INSERT INTO applications (id, application_json) VALUES (?, ?)
-      ON CONFLICT (id)
-        DO UPDATE SET application_json=excluded.application_json`,
-        id,
-        applicationJson
-      )
-      .run(id, applicationJson)
+    return db.prepare(`
+        INSERT INTO applications (id, application_json) VALUES (?, ?)
+        ON CONFLICT (id) DO UPDATE SET application_json=excluded.application_json
+      `).run(id, applicationJson)
   })
 }
 
 export function deleteLock (user) {
   const { changes } = db.prepare('DELETE FROM locks WHERE grader_id = ?').run(user)
   if (changes === 0) {
-    console.log(`User ${user} requested to delete a lock, but none found.`)
+    console.warn(`User ${user} requested to delete a lock, but none found.`)
   }
 }
 
-export function submitGrade (user, body) {
+export function submitGrade (user, freeResponse, leaderGrades, crooGrades) {
   // Get stored lock (even if it's expired)
   const { applicationId } = getUserStoredLock(user)
   if (typeof applicationId !== 'string' || !applicationId) {
     throw new Error(`Unexpected applicationId ${applicationId}`)
   }
-  JSON.stringify(body)
-  db.prepare('INSERT INTO grades (grader_id, application_id, grade_json) VALUES (?, ?, ?)').run(
-    user,
-    applicationId,
-    JSON.stringify(body)
-  )
+
+  const gradeJson = JSON.stringify({ freeResponse, leaderGrades, crooGrades })
+  db.prepare('INSERT INTO grades (grader_id, application_id, grade_json) VALUES (?, ?, ?)')
+    .run(user, applicationId, gradeJson)
   return applicationId
 }

@@ -1,0 +1,83 @@
+<section class=application hx-target=this>
+<h2>Time Remaining</h2>
+<p>
+You have {% include 'seconds-span.njk' %} left to view the application.
+<div><button hx-delete=/lock hx-swap=outerHTML>Skip Application</button></div>
+
+<h2>Application</h2>
+<div class="app-fields">
+  {% for field in fields %}
+    <h3>{{ field.question }}</h3>
+    {%if field.response %}
+    <p>{{ field.response }}
+    {% else %}
+    <p class="no-response">[No response]
+    {% endif %}
+  {% endfor %}
+</div>
+
+<h2>Grading</h2>
+<div class="grading-form">
+<form hx-post=/grade hx-swap=outerHTML>
+  {%if leader_app %}
+  <h3>Leader rubric</h3>
+  <table class="rubric-radio">
+    <tr><th><th>Dissatisfactory<th><th>Low Adequate<th><th>High Adequate<th><th>Exceptional
+    {% for question in questions %}
+      <tr {% if loop.index % 2 === 0 %}class=highlight{% endif %}>
+      <td><span class=first-space>{{ question }}</span>
+      <td><input required type=radio name=leader-rubric-{{loop.index0}} value=1>
+      <td><input type=radio name=leader-rubric-{{loop.index0}} value=1.5>
+      <td><input type=radio name=leader-rubric-{{loop.index0}} value=2>
+      <td><input type=radio name=leader-rubric-{{loop.index0}} value=2.5>
+      <td><input type=radio name=leader-rubric-{{loop.index0}} value=3>
+      <td><input type=radio name=leader-rubric-{{loop.index0}} value=3.5>
+      <td><input type=radio name=leader-rubric-{{loop.index0}} value=4>
+      </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {%if croo_app %}
+  <h3>Croo rubric</h3>
+  <table class="rubric-radio">
+    <tr><th><th>Dissatisfactory<th><th>Low Adequate<th><th>High Adequate<th><th>Exceptional
+    {% for question in questions %}
+      <tr {% if loop.index % 2 === 0 %}class=highlight{% endif %}>
+      <td><span class=first-space>{{ question }}</span>
+      <td><input required type=radio name=croo-rubric-{{loop.index0}} value=1>
+      <td><input type=radio name=croo-rubric-{{loop.index0}} value=1.5>
+      <td><input type=radio name=croo-rubric-{{loop.index0}} value=2>
+      <td><input type=radio name=croo-rubric-{{loop.index0}} value=2.5>
+      <td><input type=radio name=croo-rubric-{{loop.index0}} value=3>
+      <td><input type=radio name=croo-rubric-{{loop.index0}} value=3.5>
+      <td><input type=radio name=croo-rubric-{{loop.index0}} value=4>
+      </tr>
+    {% endfor %}
+  </table>
+  <!-- <RubricRadio name="croo" {rubricItems} radioValues={crooRubric} /> -->
+  {% endif %}
+  <div class="free-response">
+    <label>Please record your overall thoughts and summary of this application, including comments
+      on any relevant experiences or anecdotes. If applicable, please note if/how the applicant is
+      better qualified to be a Trip Leader or Crooling. Write at least 350 characters in your
+      summary.
+      <textarea required
+                autocomplete=off
+                name=free-response
+                minlength=350
+                oninput="updateCharCount(this)"
+                ></textarea>
+    </label>
+    <div class=character-count>Character count: 0</div>
+  </div>
+  <button type="submit">Submit Grade</button>
+</form>
+</div>
+</section>
+
+<script>
+function updateCharCount (textarea) {
+  const countElement = document.querySelector('div.character-count')
+  countElement.innerText = `Character count: ${textarea.value.length}`
+}
+</script>

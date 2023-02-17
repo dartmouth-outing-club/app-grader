@@ -9,9 +9,9 @@ CREATE TABLE applications (
 );
 
 CREATE TABLE locks (
-    grader_id TEXT,
-    application_id TEXT REFERENCES applications(id),
-    expire_time INTEGER
+    grader_id TEXT NOT NULL UNIQUE,
+    application_id TEXT NOT NULL REFERENCES applications(id),
+    expire_time INTEGER NOT NULL
 );
 
 CREATE TABLE grades (
