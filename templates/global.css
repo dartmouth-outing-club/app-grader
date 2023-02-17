@@ -83,18 +83,9 @@ h1 {
   margin-top: 10px;
 }
 
-.rubric-radio .first-space {
-  width: 310px;
-}
-
 .rubric-radio .headers {
   display: flex;
   flex-direction: row;
-}
-
-/* The header width needs to be 2x the input */
-.rubric-radio .header {
-  width: 140px;
 }
 
 .rubric-radio input[type='radio'] {
@@ -106,6 +97,10 @@ h1 {
 table.rubric-radio {
   display: grid;
   border-collapse: collapse;
+}
+
+.rubric-radio th, .rubric-radio td {
+  padding: 7px 12px;
 }
 
 .rubric-radio .highlight {

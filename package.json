@@ -5,7 +5,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "dev": "NODE_ENV=development nodemon -e js,njk src/server.js",
+    "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "start": "node src/server.js",
     "init-db": "sqlite3 app-grader.db '.read scripts/init-db.sql' && NODE_ENV=development node scripts/apps-loader.js 1",
     "test": "standard && node --test --loader=esmock",

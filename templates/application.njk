@@ -22,16 +22,13 @@ You have {% include 'seconds-span.njk' %} left to view the application.
   {%if leader_app %}
   <h3>Leader rubric</h3>
   <table class="rubric-radio">
-    <tr><th><th>Dissatisfactory<th><th>Low Adequate<th><th>High Adequate<th><th>Exceptional
+    <tr><th><th>Dissatisfactory<th>Low Adequate<th>High Adequate<th>Exceptional
     {% for question in questions %}
       <tr {% if loop.index % 2 === 0 %}class=highlight{% endif %}>
       <td><span class=first-space>{{ question }}</span>
       <td><input required type=radio name=leader-rubric-{{loop.index0}} value=1>
-      <td><input type=radio name=leader-rubric-{{loop.index0}} value=1.5>
       <td><input type=radio name=leader-rubric-{{loop.index0}} value=2>
-      <td><input type=radio name=leader-rubric-{{loop.index0}} value=2.5>
       <td><input type=radio name=leader-rubric-{{loop.index0}} value=3>
-      <td><input type=radio name=leader-rubric-{{loop.index0}} value=3.5>
       <td><input type=radio name=leader-rubric-{{loop.index0}} value=4>
       </tr>
     {% endfor %}
@@ -40,16 +37,13 @@ You have {% include 'seconds-span.njk' %} left to view the application.
   {%if croo_app %}
   <h3>Croo rubric</h3>
   <table class="rubric-radio">
-    <tr><th><th>Dissatisfactory<th><th>Low Adequate<th><th>High Adequate<th><th>Exceptional
+    <tr><th><th>Dissatisfactory<th>Low Adequate<th>High Adequate<th>Exceptional
     {% for question in questions %}
       <tr {% if loop.index % 2 === 0 %}class=highlight{% endif %}>
       <td><span class=first-space>{{ question }}</span>
       <td><input required type=radio name=croo-rubric-{{loop.index0}} value=1>
-      <td><input type=radio name=croo-rubric-{{loop.index0}} value=1.5>
       <td><input type=radio name=croo-rubric-{{loop.index0}} value=2>
-      <td><input type=radio name=croo-rubric-{{loop.index0}} value=2.5>
       <td><input type=radio name=croo-rubric-{{loop.index0}} value=3>
-      <td><input type=radio name=croo-rubric-{{loop.index0}} value=3.5>
       <td><input type=radio name=croo-rubric-{{loop.index0}} value=4>
       </tr>
     {% endfor %}
