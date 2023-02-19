@@ -6,10 +6,11 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
-    "start": "node src/server.js",
+    "format": "standard --fix",
+    "generate-env-vars": "node ./scripts/generate-env-vars.js",
     "init-db": "sqlite3 app-grader.db '.read scripts/init-db.sql' && NODE_ENV=development node scripts/apps-loader.js 1",
-    "test": "standard && node --test --loader=esmock",
-    "format": "standard --fix"
+    "start": "node src/server.js",
+    "test": "standard && node --test --loader=esmock"
   },
   "devDependencies": {
     "esmock": "^1.7.5",

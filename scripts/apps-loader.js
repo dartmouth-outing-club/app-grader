@@ -3,7 +3,7 @@
  */
 import { getAllApps } from '../src/functions/sheetFormatting.js'
 import { getAppsSheet } from '../src/modules/googleServiceAcc.js'
-import { loadApplications } from '../src/modules/sqlite-accessor.js'
+import * as sqlite from '../src/modules/sqlite-accessor.js'
 
 if (process.argv.length !== 3) {
   console.error('Usage: node apps-loader.js [SHEET OFFSET]')
@@ -17,6 +17,8 @@ const applications = getAllApps(sheet, offset)
 console.log(`Pulled ${applications.length} applications`)
 
 // Load the applications into SQLite
-const responses = loadApplications(applications)
+sqlite.start('app-grader.db')
+const responses = sqlite.loadApplications(applications)
 console.log('sqlite responses:', ...responses)
+sqlite.stop('app-grader.db')
 process.exit(0)

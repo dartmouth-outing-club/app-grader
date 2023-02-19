@@ -22,7 +22,7 @@ const frontendClientId = clientKey.web.client_id
 // The VITE prefix exposes the variable to frontend
 const envFile = `GOOGLE_SERVICE_KEY=${JSON.stringify(restOfServiceKey)}
 GOOGLE_SERVICE_PRIVATE_KEY="${private_key}"
-VITE_GOOGLE_CLIENT_ID=${frontendClientId}
+GOOGLE_CLIENT_ID=${frontendClientId}
 APP_CONFIG=${JSON.stringify(appConfig)}`
 
 // Write the file
