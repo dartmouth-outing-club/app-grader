@@ -70,7 +70,7 @@ function checkoutRandomApp (user) {
         FROM grades
         GROUP BY application_id
     ) as grades_count on id = grades_count.application_id
-    WHERE num_grades < 3 AND (expire_time IS NULL or expire_time < ?)
+    WHERE num_grades < 2 AND (expire_time IS NULL or expire_time < ?)
     ORDER BY RANDOM()
   `)
     .get(now.getTime())

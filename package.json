@@ -8,6 +8,7 @@
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "format": "standard --fix",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
+    "load-apps": "node scripts/apps-loader.js 1",
     "init-db": "sqlite3 app-grader.db '.read scripts/init-db.sql' && NODE_ENV=development node scripts/apps-loader.js 1",
     "start": "node src/server.js",
     "test": "standard && node --test --loader=esmock"
