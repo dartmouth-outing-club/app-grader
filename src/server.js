@@ -8,6 +8,8 @@ import * as grade from './routes/grade.js'
 import * as lock from './routes/lock.js'
 import bodyParser from 'body-parser'
 
+const _30_DAYS_IN_MS = 2592000000
+
 process.env.TZ = 'America/New_York'
 
 const router = express.Router()
@@ -22,8 +24,9 @@ nunjucks
   .configure('templates', { express: app })
   .addGlobal('GOOGLE_CLIENT_ID', process.env.GOOGLE_CLIENT_ID)
 app.set('views', '/templates')
-app.use('/static', express.static('static'))
-app.use('/htmx', express.static('node_modules/htmx.org/dist'))
+app.use('/htmx', express.static('node_modules/htmx.org/dist', { maxAge: _30_DAYS_IN_MS }))
+app.use('/favicon.ico', express.static('favicon.ico', { maxAge: _30_DAYS_IN_MS }))
+
 // It really rankles me that you have to install the body-parser library for this
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/', router)
