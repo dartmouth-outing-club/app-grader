@@ -23,8 +23,10 @@ a:visited {
   color: #9d162e;
 }
 
-.content {
+main {
   padding: 20px;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 h1 {
