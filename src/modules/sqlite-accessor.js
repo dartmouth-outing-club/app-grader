@@ -62,18 +62,21 @@ function checkoutRandomApp (user) {
   // Get a random application that is not currently locked and has fewer than 3 grades
   const application = db
     .prepare(`
-    SELECT id, expire_time, IFNULL(num_grades_nullable, 0) as num_grades
+    SELECT
+      id, expire_time,
+      EXISTS (SELECT 1 FROM grades WHERE application_id = id AND grader_id = ?) AS has_graded,
+      IFNULL(num_grades_nullable, 0) as num_grades
     FROM applications
     LEFT JOIN locks on id = locks.application_id
     LEFT JOIN (
-        SELECT application_id, count(application_id) as num_grades_nullable
-        FROM grades
-        GROUP BY application_id
+      SELECT application_id, count(application_id) as num_grades_nullable
+      FROM grades
+      GROUP BY application_id
     ) as grades_count on id = grades_count.application_id
-    WHERE num_grades < 2 AND (expire_time IS NULL or expire_time < ?)
+    WHERE num_grades < 2 AND (expire_time IS NULL or expire_time < ?) AND has_graded = 0
     ORDER BY RANDOM()
   `)
-    .get(now.getTime())
+    .get(user, now.getTime())
 
   if (!application) {
     console.log('All applications locked. Either you forgot to init the db, or we\'re almost done!')
