@@ -80,7 +80,7 @@ function checkoutRandomApp (user) {
 
   if (!application) {
     console.log('All applications locked. Either you forgot to init the db, or we\'re almost done!')
-    return null
+    return {}
   }
   const applicationId = application.id
   console.log(`Retrieved application ${applicationId}`)
@@ -140,6 +140,8 @@ export function getApplicationForUser (user) {
   if (!user) throw new Error(`Invalid argument: provided user was ${user}`)
 
   const { applicationId, expireTime } = getLockedAppOrCheckoutRandom(user)
+  if (!applicationId) return {}
+
   const applicationJson = db
     .prepare('SELECT application_json FROM applications WHERE id = ?')
     .get(applicationId)
