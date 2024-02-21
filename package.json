@@ -5,13 +5,13 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "deploy": "flyctl deploy --config ./fly/fly.toml --dockerfile ./fly/Dockerfile",
+    "deploy": "flyctl deploy",
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "format": "standard --fix",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
     "load-apps": "node scripts/apps-loader.js 1",
-    "init-db": "sqlite3 app-grader.db '.read scripts/init-db.sql' && NODE_ENV=development node scripts/apps-loader.js 1",
-    "start": "node src/server.js",
+    "init-db": "NODE_ENV=development node scripts/apps-loader.js 1",
+    "start": "npm run init-db && node src/server.js",
     "test": "standard && node --test --loader=esmock"
   },
   "devDependencies": {

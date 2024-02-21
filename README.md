@@ -41,10 +41,19 @@ The spreadsheet needs to have a "responses" sheet, and a "grades" sheet, where "
 the application responses, and "grades" is used by the webapp to save grades.
 
 ## Database
-TODO: Write about SQLite architecture
-
 The first time you run the app, you'll need to load the applications into the database. The script
 for this is in the `scripts` directory and can be run with `node scripts/apps-loader.js [OFFSET
 NUM]`, where `[OFFSET NUM]` is the number of rows at the beginning of the sheet to exclude (headers
 and such). Running that command requires that the `GOOGLE_SERVICE_KEY` and
 `GOOGLE_SERVICE_PRIVATE_KEY` env vars be in the current shell session.
+
+## Deployment
+This year I used fly.io to deploy the service.
+If you'd rather deploy it elsewhere, go for it.
+However, this is basically what you have to do:
+
+```sh
+fly launch
+fly volume create data -r bos -n 1
+fly deploy
+```

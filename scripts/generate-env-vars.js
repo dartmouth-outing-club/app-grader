@@ -18,10 +18,11 @@ const clientKey = JSON.parse(fs.readFileSync(CLIENT_OAUTH_FP).toString())
 /* eslint-disable camelcase */
 const { private_key, ...restOfServiceKey } = serviceKey
 const frontendClientId = clientKey.web.client_id
+const private_key_base_64 = Buffer.from(private_key).toString('base64')
 
 // The VITE prefix exposes the variable to frontend
 const envFile = `GOOGLE_SERVICE_KEY=${JSON.stringify(restOfServiceKey)}
-GOOGLE_SERVICE_PRIVATE_KEY="${private_key}"
+GOOGLE_SERVICE_PRIVATE_KEY_BASE_64=${private_key_base_64}
 GOOGLE_CLIENT_ID=${frontendClientId}
 APP_CONFIG=${JSON.stringify(appConfig)}`
 

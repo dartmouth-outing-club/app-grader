@@ -12,6 +12,8 @@ const _30_DAYS_IN_MS = 2592000000
 
 process.env.TZ = 'America/New_York'
 
+const DB_FILEPATH = process.env.DB_FILEPATH || 'app-grader.db'
+
 const router = express.Router()
 router.get('/', getUser, index.get)
 router.post('/grade', requireUser, grade.post)
@@ -32,7 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/', router)
 app.use(handleError)
 
-sqlite.start('app-grader.db')
+sqlite.start(DB_FILEPATH)
 process.on('exit', () => {
   sqlite.stop()
 })
@@ -42,7 +44,7 @@ process.on('SIGTERM', () => process.exit(128 + 15))
 
 // START THE SERVER
 // =============================================================================
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 3000
 app.listen(port)
 console.log(`Server running at localhost:${port}`)
 console.error(`Starting up at ${new Date()}`)
