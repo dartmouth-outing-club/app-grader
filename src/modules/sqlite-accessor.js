@@ -16,6 +16,7 @@ export function start (name) {
       console.error(err)
       throw new Error(`Failed to open db ${dbName}. Did you remember to initialize the database?`)
     }
+    else throw err
   }
   db.pragma('journal_mode = WAL')
   db.pragma('foreign_keys = ON')
