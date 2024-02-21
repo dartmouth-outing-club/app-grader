@@ -5,6 +5,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "deploy": "flyctl deploy --config ./fly/fly.toml --dockerfile ./fly/Dockerfile",
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "format": "standard --fix",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
@@ -15,7 +16,7 @@
   },
   "devDependencies": {
     "esmock": "^1.7.5",
-    "nodemon": "^2.0.20",
+    "nodemon": "^3.0.3",
     "standard": "^17.0.0"
   },
   "type": "module",
