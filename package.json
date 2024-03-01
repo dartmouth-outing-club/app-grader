@@ -11,8 +11,7 @@
     "format": "standard --fix",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
     "load-apps": "node scripts/apps-loader.js 1",
-    "init-db": "NODE_ENV=development node scripts/apps-loader.js 1",
-    "start": "npm run init-db && node src/server.js",
+    "start": "node src/server.js",
     "test": "standard && node --test --loader=esmock"
   },
   "devDependencies": {
