@@ -5,7 +5,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "deploy": "flyctl deploy",
+    "fly-deploy": "flyctl deploy",
+    "fly-set-secrets": "npm run generate-env-vars && cat .env | flyctl secrets import",
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "format": "standard --fix",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
