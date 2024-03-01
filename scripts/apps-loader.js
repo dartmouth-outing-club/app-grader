@@ -1,9 +1,7 @@
 /**
  * apps-loader.js - loads the applications sheet into the database
  */
-import fs from 'node:fs'
 import process from 'node:process'
-import child_process from 'node:child_process'
 import { getAllApps } from '../src/functions/sheetFormatting.js'
 import { getAppsSheet } from '../src/modules/googleServiceAcc.js'
 import * as sqlite from '../src/modules/sqlite-accessor.js'
@@ -15,11 +13,6 @@ if (process.argv.length !== 3) {
   process.exit(1)
 }
 
-
-if (!fs.existsSync(DB_FILEPATH)) {
-  console.log(`Database ${DB_FILEPATH} not found;creating schema`)
-  child_process.execSync(`sqlite3 ${DB_FILEPATH} ".read scripts/init-db.sql"`)
-}
 
 // Get the applications from the google sheet
 console.log('Downloading responses from google sheet')
