@@ -16,13 +16,10 @@ if (process.argv.length !== 3) {
 }
 
 
-if (fs.existsSync(DB_FILEPATH)) {
-  console.log(`Database ${DB_FILEPATH} exists, skipping initialization`)
-  process.exit(0)
+if (!fs.existsSync(DB_FILEPATH)) {
+  console.log(`Database ${DB_FILEPATH} not found;creating schema`)
+  child_process.execSync(`sqlite3 ${DB_FILEPATH} ".read scripts/init-db.sql"`)
 }
-
-console.log(`Database ${DB_FILEPATH} not found;creating schema`)
-child_process.execSync(`sqlite3 ${DB_FILEPATH} ".read scripts/init-db.sql"`)
 
 // Get the applications from the google sheet
 console.log('Downloading responses from google sheet')

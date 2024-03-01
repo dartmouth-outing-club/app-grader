@@ -56,4 +56,6 @@ However, this is basically what you have to do:
 fly launch
 fly volume create data -r bos -n 1
 fly deploy
+npm run fly-secrets
+npm run fly-deploy
 ```
