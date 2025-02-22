@@ -6,7 +6,6 @@ import * as sqlite from './modules/sqlite-accessor.js'
 import * as index from './routes/index.js'
 import * as grade from './routes/grade.js'
 import * as lock from './routes/lock.js'
-import bodyParser from 'body-parser'
 
 const _30_DAYS_IN_MS = 2592000000
 
@@ -29,8 +28,7 @@ app.set('views', '/templates')
 app.use('/htmx', express.static('node_modules/htmx.org/dist', { maxAge: _30_DAYS_IN_MS }))
 app.use('/favicon.ico', express.static('favicon.ico', { maxAge: _30_DAYS_IN_MS }))
 
-// It really rankles me that you have to install the body-parser library for this
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }))
 app.use('/', router)
 app.use(handleError)
 
