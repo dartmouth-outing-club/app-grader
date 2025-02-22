@@ -46,7 +46,7 @@ process.on('SIGTERM', () => process.exit(128 + 15))
 // =============================================================================
 const port = process.env.PORT || 3000
 app.listen(port)
-console.log(`Server running at localhost:${port}`)
+console.log(`Server running at http://localhost:${port}`)
 console.error(`Starting up at ${new Date()}`)
 
 function handleError (err, req, res, _next) {
