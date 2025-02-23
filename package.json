@@ -5,13 +5,12 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "fly-deploy": "flyctl deploy",
-    "fly-set-secrets": "npm run generate-env-vars && cat .env | flyctl secrets import",
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "format": "standard --fix",
+    "reset-db": "rm ./app-grader.db* && npm run init-db",
     "init-db": "node ./scripts/init-db.js",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
-    "load-apps": "node scripts/apps-loader.js 1",
+    "load-apps": "node scripts/apps-loader.js ./applications.csv",
     "start": "npm run init-db && node src/server.js",
     "test": "standard && node --test --loader=esmock"
   },
@@ -25,7 +24,6 @@
     "better-sqlite3": "^11.8.1",
     "csv-generate": "^4.4.2",
     "csv-parse": "^5.6.0",
-    "dotenv": "^16.0.0",
     "express": "^4.18.2",
     "htmx.org": "^1.8.5",
     "nunjucks": "^3.2.3"

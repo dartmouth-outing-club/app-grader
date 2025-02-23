@@ -32,18 +32,13 @@ please refer to the following documents (links open in new tab):
 </ul>
 
 {% if not user %}
-<p>You will need to sign in
-
+<h2>Login</h2>
 <form action=/login method=POST class=login>
-  <label>
-    NetId
-    <input type=text name=netid>
-  </label>
+  <label for=netid>NetId</label>
+  <input type=text id=netid name=netid>
 
-  <label>
-    Password
-    <input type=password name=password>
-  </label>
+  <label for=password>Password</label>
+  <input type=password id=password name=password>
 
   <button class=submit>Submit</button>
 </form>

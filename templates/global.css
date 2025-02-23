@@ -5,8 +5,12 @@ body {
   padding: 0px;
 }
 
-form.login label {
-  display: block;
+form.login {
+  display: grid;
+  width: 200px;
+  grid-template-columns: 100px 1fr;
+  label { display: block; }
+  button { margin-top: 10px; }
 }
 
 button.submit {

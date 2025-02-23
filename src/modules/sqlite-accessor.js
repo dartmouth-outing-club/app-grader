@@ -192,8 +192,10 @@ export function submitGrade (user, freeResponse, leaderGrades, crooGrades) {
   return applicationId
 }
 
-export function createUserSession(id, token) {
-  db.prepare('INSERT OR REPLACE INTO sessions (netid, token) VALUES (?, ?)').run(id, token)
+export function createUserSession(id, token, isAdmin) {
+  const is_admin = isAdmin ? 1 : 0
+  db.prepare('INSERT OR REPLACE INTO sessions (netid, token, is_admin) VALUES (?, ?, ?)')
+    .run(id, token, is_admin)
 }
 
 export function deleteUserSession(token) {
