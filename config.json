@@ -1,6 +1,8 @@
 {
   "progressColumn": "E",
   "identifierColumn": "DN",
+  "userPassword": "user",
+  "adminPassword": "admin",
   "questions": [
     "What personal characteristics, experiences, and perspectives motivate you to be a Trip Leader and/or Support Crooling? In your answer, feel free to touch on your own transition to Dartmouth or any other perspectives that will guide your interactions with incoming students from all backgrounds.",
     "First-Year Trips presents moments of challenge for both incoming students and leaders. Tell us about a time you faced a challenge or dealt with discomfort. What did you learn from it and/or what would you do differently in the future?",
