@@ -6,16 +6,22 @@ const COOKIE_SETTINGS = { maxAge: 2.592e9, httpOnly: true, secure: true }
 
 export async function getUser (req, _res, next) {
   const user = getUserFromToken(req)
-  req.user = user
+  if (user) {
+    req.user = user.netid
+    req.is_admin = user.is_admin
+  }
   next()
 }
 
 export async function requireUser (req, res, next) {
-  req.user = getUserFromToken(req)
+  const user = getUserFromToken(req)
   if (!req.user) {
     res.set('HX-Refresh', 'true') // Refresh the page to give the user a change to login again
     return res.sendStatus(401)
   }
+
+  req.user = user.netid
+  req.is_admin = user.is_admin
   return next()
 }
 
@@ -35,7 +41,7 @@ export async function loginUser(req, res) {
     res.cookie("token", token, COOKIE_SETTINGS)
     return res.redirect('/')
   } else if (password === APP_CONFIG.userPassword) {
-    sqlite.createUserSession(id, token, true)
+    sqlite.createUserSession(id, token, false)
     res.cookie("token", token, COOKIE_SETTINGS)
     return res.redirect('/')
   }

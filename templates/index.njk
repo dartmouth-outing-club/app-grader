@@ -13,7 +13,7 @@
 
 
 {% if user %}
-<div class=netid>NetId: {{ user }}</div>
+<div class=netid>NetId: {{ user }} {{ '(admin)' if is_admin }}</div>
 <form action=/logout method=post><button>Logout</button></form>
 {% endif %}
 </header>

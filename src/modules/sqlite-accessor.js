@@ -203,6 +203,5 @@ export function deleteUserSession(token) {
 }
 
 export function getUserForToken(token) {
-  const res = db.prepare('SELECT netid FROM sessions WHERE token = ?').get(token)
-  return res?.netid
+  return db.prepare('SELECT netid, is_admin FROM sessions WHERE token = ?').get(token)
 }
