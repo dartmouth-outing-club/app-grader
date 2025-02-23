@@ -8,7 +8,16 @@
 <script src="/htmx/htmx.js"></script>
 <style>{% include 'global.css' %}</style>
 
+<header>
 <h1>First-Year Trips Application Grader</h1>
+
+
+{% if user %}
+<div class=netid>NetId: {{ user }}</div>
+<form action=/logout method=post><button>Logout</button></form>
+{% endif %}
+</header>
+
 <main>
 <p>
 Thank you so much for volunteering to grade First-Year Trips applications! Trips wouldn't be
@@ -22,7 +31,7 @@ please refer to the following documents (links open in new tab):
 <li><a target=_blank href="https://docs.google.com/document/d/1cVYhRWiNP_18H-SiDaK0o9buAI3vlTF6rGknDCyu6SE/edit?pli=1">Training Materials</a>
 </ul>
 
-{% if logged_in !== true %}
+{% if not user %}
 <p>You will need to sign in
 
 <form action=/login method=POST class=login>
@@ -36,7 +45,7 @@ please refer to the following documents (links open in new tab):
     <input type=password name=password>
   </label>
 
-  <button>Submit</button>
+  <button class=submit>Submit</button>
 </form>
 
 <div id="g_id_onload"
@@ -54,7 +63,7 @@ please refer to the following documents (links open in new tab):
 </div>
 
 {% else %}
-<div><button hx-post=/lock hx-swap=outerHTML>Get Application</button></div>
+<div><button hx-post=/lock hx-swap=outerHTML class=submit>Get Application</button></div>
 {% endif %}
 
 </main>

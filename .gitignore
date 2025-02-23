@@ -1,13 +1,8 @@
-.DS_Store
 node_modules
 /build
-/.svelte-kit
-/package
 .env
 .env.*
 !.env.example
-jwt.keys.json
 app-config.json
-client-oauth.json
-dump.rdb
 *.db*
+*.csv

@@ -18,6 +18,12 @@ export async function requireUser (req, res, next) {
   return next()
 }
 
+export async function logoutUser(req, res) {
+  const token = getToken(req)
+  sqlite.deleteUserSession(token)
+  res.redirect('/')
+}
+
 export async function loginUser(req, res) {
   const id = req.body.netid
   const token = await getRandomKey()
@@ -29,10 +35,14 @@ export async function loginUser(req, res) {
   res.redirect('/')
 }
 
-function getUserFromToken(req) {
+function getToken(req) {
   const cookies = req.get('cookie')?.split('; ')
   const authCookie = cookies?.find(item => item.includes('token'))?.split('=') || []
-  const token = authCookie[1]
+  return authCookie[1]
+}
+
+function getUserFromToken(req) {
+  const token = getToken(req)
   return sqlite.getUserForToken(token)
 }
 

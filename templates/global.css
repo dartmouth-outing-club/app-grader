@@ -9,7 +9,7 @@ form.login label {
   display: block;
 }
 
-button {
+button.submit {
   width: 183px;
   height: 38px;
   color: #ffffff;
@@ -17,7 +17,7 @@ button {
   border-radius: 4px;
 }
 
-button:hover {
+button.submit:hover {
   background-color: #12312b;
 }
 
@@ -33,11 +33,28 @@ main {
   max-width: 1200px;
 }
 
-h1 {
+header {
   background-color: #00693e;
   padding: 20px;
   margin: 0px;
   color: #ffffff;
+  display: flex;
+
+  h1 {
+    margin: 0 auto 0 0;
+  }
+
+  .netid {
+    margin: auto 10px;
+    font-size: 16px;
+  }
+
+  form {
+    margin: auto 10px;
+  }
+
+  button {
+  }
 }
 
 .app-fields {
@@ -85,7 +102,7 @@ h1 {
   max-width: 800px;
 }
 
-.grading-form button {
+.grading-form button.submit {
   margin-top: 10px;
 }
 

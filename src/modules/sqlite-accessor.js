@@ -196,6 +196,10 @@ export function createUserSession(id, token) {
   db.prepare('INSERT OR REPLACE INTO sessions (netid, token) VALUES (?, ?)').run(id, token)
 }
 
+export function deleteUserSession(token) {
+  db.prepare('DELETE FROM sessions WHERE token = ?').run(token)
+}
+
 export function getUserForToken(token) {
   const res = db.prepare('SELECT netid FROM sessions WHERE token = ?').get(token)
   return res?.netid
