@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="google-signin-client_id" content="CLIENT_ID.apps.googleusercontent.com" />
 <script src="/htmx/htmx.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>{% include 'global.css' %}</style>
 
 <h1>First-Year Trips Application Grader</h1>
@@ -24,7 +23,22 @@ please refer to the following documents (links open in new tab):
 </ul>
 
 {% if logged_in !== true %}
-<p>You will need to sign in using your Dartmouth-provided Google account.
+<p>You will need to sign in
+
+<form action=/login method=POST class=login>
+  <label>
+    NetId
+    <input type=text name=netid>
+  </label>
+
+  <label>
+    Password
+    <input type=password name=password>
+  </label>
+
+  <button>Submit</button>
+</form>
+
 <div id="g_id_onload"
      data-client_id="{{ GOOGLE_CLIENT_ID }}"
      data-callback="setJWT"
@@ -38,6 +52,7 @@ please refer to the following documents (links open in new tab):
      data-shape="rectangular"
      data-logo_alignment="left">
 </div>
+
 {% else %}
 <div><button hx-post=/lock hx-swap=outerHTML>Get Application</button></div>
 {% endif %}

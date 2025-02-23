@@ -5,6 +5,10 @@ body {
   padding: 0px;
 }
 
+form.login label {
+  display: block;
+}
+
 button {
   width: 183px;
   height: 38px;

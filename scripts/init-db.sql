@@ -20,3 +20,9 @@ CREATE TABLE grades (
     grade_json TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE sessions (
+    netid TEXT,
+    token TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

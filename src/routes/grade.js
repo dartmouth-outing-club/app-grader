@@ -1,4 +1,3 @@
-import * as googleService from '../modules/googleServiceAcc.js'
 import * as sqlite from '../modules/sqlite-accessor.js'
 import * as applicationView from '../application.js'
 
@@ -19,9 +18,6 @@ export async function post (req, res) {
   if (!validateGrades(leaderGrades) || !validateGrades(crooGrades) || !freeResponse) {
     return res.sendStatus(400)
   }
-
-  const applicationId = sqlite.submitGrade(req.user, freeResponse, leaderGrades, crooGrades)
-  googleService.addGrade(req.user, applicationId, freeResponse, leaderGrades, crooGrades)
 
   sqlite.deleteLock(req.user)
   const application = sqlite.getApplicationForUser(req.user)

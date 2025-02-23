@@ -1,7 +1,7 @@
 import express from 'express'
 import nunjucks from 'nunjucks'
 
-import { getUser, requireUser } from './authentication.js'
+import { getUser, requireUser, loginUser } from './authentication.js'
 import * as sqlite from './modules/sqlite-accessor.js'
 import * as index from './routes/index.js'
 import * as grade from './routes/grade.js'
@@ -14,7 +14,9 @@ process.env.TZ = 'America/New_York'
 const DB_FILEPATH = process.env.DB_FILEPATH || 'app-grader.db'
 
 const router = express.Router()
+
 router.get('/', getUser, index.get)
+router.post('/login', loginUser)
 router.post('/grade', requireUser, grade.post)
 router.get('/lock', requireUser, lock.get)
 router.post('/lock', requireUser, lock.post)

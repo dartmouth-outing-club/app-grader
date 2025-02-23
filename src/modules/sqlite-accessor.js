@@ -191,3 +191,12 @@ export function submitGrade (user, freeResponse, leaderGrades, crooGrades) {
     .run(user, applicationId, gradeJson)
   return applicationId
 }
+
+export function createUserSession(id, token) {
+  db.prepare('INSERT OR REPLACE INTO sessions (netid, token) VALUES (?, ?)').run(id, token)
+}
+
+export function getUserForToken(token) {
+  const res = db.prepare('SELECT netid FROM sessions WHERE token = ?').get(token)
+  return res?.netid
+}

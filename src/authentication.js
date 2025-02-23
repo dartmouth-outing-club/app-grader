@@ -1,18 +1,16 @@
-// https://developers.google.com/identity/sign-in/web/backend-auth#using-a-google-api-client-library
-import { OAuth2Client } from 'google-auth-library'
-import { GOOGLE_CLIENT_ID } from './modules/config.js'
+import * as crypto from 'node:crypto'
+import * as sqlite from '../src/modules/sqlite-accessor.js'
 
-const client = new OAuth2Client(GOOGLE_CLIENT_ID)
+const COOKIE_SETTINGS = { maxAge: 2.592e9, httpOnly: true, secure: true }
 
-export async function getUser (req, res, next) {
-  const jwt = getGoogleAuthCookie(req)
-  req.user = await getUserFromJwt(jwt)
-  return next()
+export async function getUser (req, _res, next) {
+  const user = getUserFromToken(req)
+  req.user = user
+  next()
 }
 
 export async function requireUser (req, res, next) {
-  const jwt = getGoogleAuthCookie(req)
-  req.user = await getUserFromJwt(jwt)
+  req.user = getUserFromToken(req)
   if (!req.user) {
     res.set('HX-Refresh', 'true') // Refresh the page to give the user a change to login again
     return res.sendStatus(401)
@@ -20,38 +18,30 @@ export async function requireUser (req, res, next) {
   return next()
 }
 
+export async function loginUser(req, res) {
+  const id = req.body.netid
+  const token = await getRandomKey()
+  sqlite.createUserSession(id, token)
+  res.cookie("token", token, COOKIE_SETTINGS)
 
-function getGoogleAuthCookie (req) {
-  const cookies = req.get('cookie')?.split('; ')
-  const authCookie = cookies?.find(item => item.includes('google_auth'))?.split('=') || []
-  return authCookie.at(1)
+  // TODO check password
+
+  res.redirect('/')
 }
 
-/**
- * Validate the provided JWT and extract the user's email from it.
- *
- * @param token JWT token provdided by the user
- * @returns the user's email if valid
- * @throws exception if the user is not valid
- */
-async function getUserFromJwt (token) {
-  if (typeof token !== 'string') return undefined
+function getUserFromToken(req) {
+  const cookies = req.get('cookie')?.split('; ')
+  const authCookie = cookies?.find(item => item.includes('token'))?.split('=') || []
+  const token = authCookie[1]
+  return sqlite.getUserForToken(token)
+}
 
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: GOOGLE_CLIENT_ID // Specify the CLIENT_ID of the app that accesses the backend
-      // Or, if multiple clients access the backend:
-      // [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+async function getRandomKey() {
+  return new Promise((resolve, reject) => {
+    crypto.randomBytes(128, (err, buf) => {
+      if (err) reject(err)
+      resolve(buf.toString('hex'))
     })
-    const payload = ticket.getPayload()
-    const userid = payload.email
-    // If request specified a G Suite domain:
-    // const domain = payload['hd'];
-   return userid
-  } catch (err) {
-    console.warn(err.message)
-    return undefined
-  }
+  })
 }
 
