@@ -1,7 +1,7 @@
 <span class=time-remaining
       hx-target=this
-      hx-get=/lock
-    hx-trigger="load delay:{% if timeRemaining.seconds < 60 %}1{% else %}30{%endif%}s"
+      hx-get=/locks
+      hx-trigger="load delay:{% if timeRemaining.seconds < 60 %}1{% else %}30{%endif%}s"
       hx-swap=outerHTML
       >{{ timeRemaining.text }}
 </span>

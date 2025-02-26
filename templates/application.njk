@@ -2,7 +2,7 @@
 <h2>Time Remaining</h2>
 <p>
 You have {% include 'seconds-span.njk' %} left to view the application.
-<div><button hx-delete=/lock hx-swap=outerHTML class=submit>Skip Application</button></div>
+<div><button hx-delete=/locks hx-swap=outerHTML class=submit>Skip Application</button></div>
 
 <h2>Application</h2>
 <div class="app-fields">
@@ -18,7 +18,7 @@ You have {% include 'seconds-span.njk' %} left to view the application.
 
 <h2>Grading</h2>
 <div class="grading-form">
-<form hx-post=/grade hx-swap="outerHTML show:top">
+<form hx-post=/grades hx-swap="outerHTML show:top">
   {%if leader_app %}
   <h3>Leader rubric</h3>
   <table class="rubric-radio">

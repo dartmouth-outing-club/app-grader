@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>FYT Application Grader</title>
+<meta charset="utf-8" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="google-signin-client_id" content="CLIENT_ID.apps.googleusercontent.com" />
+<script src="/htmx/htmx.js"></script>
+<style>{% include 'global.css' %}</style>
+
+<header>
+<h1><a href=/>First-Year Trips Application Grader</a></h1>
+
+
+{% if user %}
+{% if is_admin %}
+<div><a href="/grades">View Grades</a></div>
+{% endif %}
+<div class=netid>NetId: {{ user }}</div>
+<form action=/logout method=post><button>Logout</button></form>
+{% endif %}
+</header>
+
+<main>
+
+<h1>Grades</h1>
+
+</main>
+

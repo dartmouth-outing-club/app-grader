@@ -1,6 +1,11 @@
 import * as sqlite from '../modules/sqlite-accessor.js'
 import * as applicationView from '../application.js'
 
+export async function get (req, res) {
+  const { user, is_admin } = req
+  res.render('grades.njk', { user, is_admin })
+}
+
 export async function post (req, res) {
   const body = req.body
 

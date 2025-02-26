@@ -4,8 +4,8 @@ import nunjucks from 'nunjucks'
 import * as authentication from './authentication.js'
 import * as sqlite from './modules/sqlite-accessor.js'
 import * as index from './routes/index.js'
-import * as grade from './routes/grade.js'
-import * as lock from './routes/lock.js'
+import * as grades from './routes/grades.js'
+import * as locks from './routes/locks.js'
 
 const { getUser, requireUser } = authentication
 
@@ -20,10 +20,13 @@ const router = express.Router()
 router.get('/', getUser, index.get)
 router.post('/login', authentication.loginUser)
 router.post('/logout', authentication.logoutUser)
-router.post('/grade', requireUser, grade.post)
-router.get('/lock', requireUser, lock.get)
-router.post('/lock', requireUser, lock.post)
-router.delete('/lock', requireUser, lock.del)
+
+router.get('/grades', requireUser, grades.get)
+router.post('/grades', requireUser, grades.post)
+
+router.get('/locks', requireUser, locks.get)
+router.post('/locks', requireUser, locks.post)
+router.delete('/locks', requireUser, locks.del)
 
 const app = express()
 nunjucks
