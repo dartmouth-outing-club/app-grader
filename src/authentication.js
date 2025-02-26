@@ -13,6 +13,18 @@ export async function getUser(req, _res, next) {
   next()
 }
 
+export async function requireAdmin(req, res, next) {
+  const user = getUserFromToken(req)
+  if (!user && !user.is_admin) {
+    res.set('HX-Refresh', 'true') // Refresh the page to give the user a change to login again
+    return res.sendStatus(401)
+  }
+
+  req.user = user.netid
+  req.is_admin = user.is_admin
+  return next()
+}
+
 export async function requireUser(req, res, next) {
   const user = getUserFromToken(req)
   if (!user) {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>FYT Application Grader</title>
+<title>Grades</title>
 <meta charset="utf-8" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,6 +24,27 @@
 <main>
 
 <h1>Grades</h1>
+
+<div>
+  <a href="/grades/download">Download as CSV</a>
+</div>
+
+<table>
+<tr>
+  <th>Grader ID</th>
+  <th>Application ID</th>
+  <th>Leader Grades</th>
+  <th>Free Response</th>
+</tr>
+{% for grade in grades %}
+<tr>
+  <td>{{ grade.grader_id }}</td>
+  <td>{{ grade.application_id }}</td>
+  <td>{{ grade.leader_grades }}</td>
+  <td>{{ grade.free_response }}</td>
+</tr>
+{% endfor %}
+</table>
 
 </main>
 

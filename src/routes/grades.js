@@ -1,9 +1,21 @@
+import * as csv from 'csv-stringify/sync'
 import * as sqlite from '../modules/sqlite-accessor.js'
 import * as applicationView from '../application.js'
 
 export async function get(req, res) {
   const { user, is_admin } = req
-  res.render('grades.njk', { user, is_admin })
+  const grades = sqlite.getGrades()
+  res.render('grades.njk', { user, is_admin, grades })
+}
+
+export async function download(_req, res) {
+  const grades = sqlite.getGradesCsvFormat()
+  const body = csv.stringify(grades, { header: true })
+
+  const filename = `fyt-app-grades-${Date.now()}.csv`
+  res.set('Content-Type', 'text/csv')
+  res.set('Content-Disposition', `attachment; filename="${filename}"`)
+  res.send(body)
 }
 
 export async function post(req, res) {

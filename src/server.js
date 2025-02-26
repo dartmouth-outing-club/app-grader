@@ -7,7 +7,7 @@ import * as index from './routes/index.js'
 import * as grades from './routes/grades.js'
 import * as locks from './routes/locks.js'
 
-const { getUser, requireUser } = authentication
+const { getUser, requireUser, requireAdmin } = authentication
 
 const _30_DAYS_IN_MS = 2592000000
 
@@ -21,7 +21,8 @@ router.get('/', getUser, index.get)
 router.post('/login', authentication.loginUser)
 router.post('/logout', authentication.logoutUser)
 
-router.get('/grades', requireUser, grades.get)
+router.get('/grades', requireAdmin, grades.get)
+router.get('/grades/download', requireAdmin, grades.download)
 router.post('/grades', requireUser, grades.post)
 
 router.get('/locks', requireUser, locks.get)

@@ -178,6 +178,49 @@ export function deleteLock(user) {
   }
 }
 
+export function getGrades() {
+  const rows =  db.prepare('SELECT grader_id, application_id, grade_json, created_at FROM grades').all()
+  return rows.map(row => {
+    const grades = JSON.parse(row.grade_json)
+    const { grader_id, application_id, created_at } = row
+
+    return {
+      grader_id,
+      application_id,
+      leader_grades: grades.leaderGrades,
+      croo_grades: grades.crooGrades,
+      free_response: grades.freeResponse,
+      created_at
+    }
+  })
+}
+
+export function getGradesCsvFormat() {
+  const grades = getGrades()
+  return grades.map(grade => {
+    const leaderGrades = grade.leader_grades.reduce((acc, curr, i) => {
+      acc[`leader_score_${i+1}`] = curr
+      return acc
+    }, {})
+
+    const crooGrades = grade.croo_grades.reduce((acc, curr, i) => {
+      acc[`croo_score_${i+1}`] = curr
+      return acc
+    }, {})
+
+    const { grader_id, application_id, created_at, free_response } = grade
+    return {
+      grader_id,
+      application_id,
+      ...leaderGrades,
+      ...crooGrades,
+      free_response,
+      created_at
+    }
+  })
+}
+
+
 export function submitGrade(user, freeResponse, leaderGrades, crooGrades) {
   // Get stored lock (even if it's expired)
   const { applicationId } = getUserStoredLock(user)
