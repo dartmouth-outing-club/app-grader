@@ -1,9 +1,9 @@
 import { isCrooApp, isLeaderApp } from './functions/trips.js'
 
-const INTROSPECTION = 'Introspection on Identities, Perspectives, and Motivation'
-const REFLECTION = 'Problem-solving and Response to Adversity'
-const MENTORSHIP = 'Inclusive Community and Group-Building'
-const LEADERSHIP = 'Peer Support and Teamwork'
+const INTROSPECTION = 'Introspection on Identities and Motivation'
+const REFLECTION = 'Problem-solving and Response to Challenges'
+const MENTORSHIP = 'Inclusive Community-Building and Peer Support'
+const LEADERSHIP = 'Responsibility, Leadership, and Initiative'
 const questions = [INTROSPECTION, REFLECTION, MENTORSHIP, LEADERSHIP]
 
 export function renderApplication(res, application) {
