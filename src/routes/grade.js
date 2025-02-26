@@ -19,6 +19,7 @@ export async function post (req, res) {
     return res.sendStatus(400)
   }
 
+  sqlite.submitGrade(req.user, freeResponse, leaderGrades, crooGrades)
   sqlite.deleteLock(req.user)
   const application = sqlite.getApplicationForUser(req.user)
   return applicationView.renderApplication(res, application)
