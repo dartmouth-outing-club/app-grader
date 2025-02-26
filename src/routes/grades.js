@@ -1,12 +1,12 @@
 import * as sqlite from '../modules/sqlite-accessor.js'
 import * as applicationView from '../application.js'
 
-export async function get (req, res) {
+export async function get(req, res) {
   const { user, is_admin } = req
   res.render('grades.njk', { user, is_admin })
 }
 
-export async function post (req, res) {
+export async function post(req, res) {
   const body = req.body
 
   const leaderGrades = []
@@ -30,7 +30,7 @@ export async function post (req, res) {
   return applicationView.renderApplication(res, application)
 }
 
-function validateGrades (grades) {
+function validateGrades(grades) {
   const gradesInRange = grades.every(grade => (grade > 0 && grade <= 4))
   const validLength = grades.length === 0 || grades.length === 4
   return gradesInRange && validLength

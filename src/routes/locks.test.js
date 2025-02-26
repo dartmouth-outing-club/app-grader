@@ -2,8 +2,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { mock, GOOGLE_CLIENT_AUTH, SQLITE, throwsException } from '../../../test/mocker.js'
 
-test('POST /api/lock', async (t) => {
-  test('it responds with 403 for unverified user', async () => {
+test('POST /api/lock', async(t) => {
+  test('it responds with 403 for unverified user', async() => {
     const { post } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: throwsException }
     })
@@ -11,7 +11,7 @@ test('POST /api/lock', async (t) => {
     assert.equal(res.status, 403)
   })
 
-  test('it responds with 500 if getApplicationForUser throws an exception', async () => {
+  test('it responds with 500 if getApplicationForUser throws an exception', async() => {
     const { post } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [SQLITE]: { getApplicationForUser: throwsException }
@@ -20,7 +20,7 @@ test('POST /api/lock', async (t) => {
     assert.equal(res.status, 500)
   })
 
-  test('it responds with 204 if getApplicationForUser returns empty applicationId', async () => {
+  test('it responds with 204 if getApplicationForUser returns empty applicationId', async() => {
     const { post } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [SQLITE]: { getApplicationForUser: () => ({}) }
@@ -29,7 +29,7 @@ test('POST /api/lock', async (t) => {
     assert.equal(res.status, 204)
   })
 
-  test('it responds with 200 and application fields on success', async () => {
+  test('it responds with 200 and application fields on success', async() => {
     const application = {
       applicationId: 'f002c6t',
       fields: {
@@ -52,8 +52,8 @@ test('POST /api/lock', async (t) => {
   })
 })
 
-test('DELETE /api/lock', async (t) => {
-  test('throws 403 for unverified user', async () => {
+test('DELETE /api/lock', async(t) => {
+  test('throws 403 for unverified user', async() => {
     const { del } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: throwsException }
     })
@@ -61,7 +61,7 @@ test('DELETE /api/lock', async (t) => {
     assert.equal(res.status, 403)
   })
 
-  test('it responds with 500 on redis error', async () => {
+  test('it responds with 500 on redis error', async() => {
     const { del } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [SQLITE]: { deleteLock: throwsException }
@@ -71,7 +71,7 @@ test('DELETE /api/lock', async (t) => {
     assert.equal(res.status, 500)
   })
 
-  test('it responds with 204 on a successful delete', async () => {
+  test('it responds with 204 on a successful delete', async() => {
     const { del } = await mock('../src/routes/api/lock.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [SQLITE]: { deleteLock: () => {} }

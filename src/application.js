@@ -18,12 +18,12 @@ export function renderApplication(res, application) {
   res.render('application.njk', { fields, timeRemaining, questions, leader_app, croo_app })
 }
 
-export function renderSecondsSpan (res, secondsRemaining) {
+export function renderSecondsSpan(res, secondsRemaining) {
   const timeRemaining = getTimeRemaining(secondsRemaining)
   res.render('seconds-span.njk', { timeRemaining })
 }
 
-function getTimeRemaining (seconds) {
+function getTimeRemaining(seconds) {
   const text = seconds > 60 ? `${Math.floor(seconds / 60)} minutes` : `${seconds} seconds`
   return { text, seconds }
 }

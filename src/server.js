@@ -55,7 +55,7 @@ app.listen(port)
 console.log(`Server running at http://localhost:${port}`)
 console.error(`Starting up at ${new Date()}`)
 
-function handleError (err, req, res, _next) {
+function handleError(err, req, res, _next) {
   switch (err.name) {
     case 'BadRequestError':
       return res.status(400).send(err.message)

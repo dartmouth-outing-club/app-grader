@@ -7,7 +7,7 @@ import { APP_CONFIG } from '../modules/config.js'
  * When retrieve this responses from the database, we zip together the array of questions and
  * the array of responses into a more semantic { question, response } object.
  */
-export function createFieldsFromResponses (responses) {
+export function createFieldsFromResponses(responses) {
   return APP_CONFIG.questions.map((question, index) => {
     return { question, response: responses[index] }
   })

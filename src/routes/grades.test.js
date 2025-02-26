@@ -10,8 +10,8 @@ import {
 
 import { get } from './grade.js'
 
-test('GET /api/grade', async () => {
-  test('it gets the grader questions', async (t) => {
+test('GET /api/grade', async() => {
+  test('it gets the grader questions', async(t) => {
     const response = await get()
     const body = JSON.parse(response.body)
     assert.equal(response.status, 200)
@@ -28,14 +28,14 @@ test('GET /api/grade', async () => {
   })
 })
 
-test('POST /api/grade', async (t) => {
+test('POST /api/grade', async(t) => {
   const { post } = await mock('../src/routes/api/grade.js', {
     [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
     [GOOGLE_SERVICE]: { addGrade: () => {} },
     [SQLITE]: { submitGrade: () => 'test-app-id' }
   })
 
-  test('it posts a well-formatted grade attempt', async (t) => {
+  test('it posts a well-formatted grade attempt', async(t) => {
     const body = {
       freeResponse: 'This was a good application',
       leaderRubric: [1, 1, 2, 2],
@@ -47,7 +47,7 @@ test('POST /api/grade', async (t) => {
     assert.equal(response.status, 200)
   })
 
-  test('it responds with 400 if the body is malformatted', async (t) => {
+  test('it responds with 400 if the body is malformatted', async(t) => {
     const body = {
       freeResponse: {},
       leaderRubric: [1, 1, 2, 2],
@@ -59,7 +59,7 @@ test('POST /api/grade', async (t) => {
     assert.equal(response.status, 400)
   })
 
-  test('it responds with 500 when submitting to redis throws an exception', async (t) => {
+  test('it responds with 500 when submitting to redis throws an exception', async(t) => {
     const { post } = await mock('../src/routes/api/grade.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [GOOGLE_SERVICE]: { addGrade: () => {} },
@@ -77,7 +77,7 @@ test('POST /api/grade', async (t) => {
     assert.equal(response.status, 500)
   })
 
-  test('it responds with 500 when submitting to google throws an exception', async (t) => {
+  test('it responds with 500 when submitting to google throws an exception', async(t) => {
     const { post } = await mock('../src/routes/api/grade.js', {
       [GOOGLE_CLIENT_AUTH]: { getUserFromJwt: () => 'testuser' },
       [GOOGLE_SERVICE]: { addGrade: throwsException },

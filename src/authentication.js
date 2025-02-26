@@ -4,7 +4,7 @@ import { APP_CONFIG } from './modules/config.js'
 
 const COOKIE_SETTINGS = { maxAge: 2.592e9, httpOnly: true, secure: true }
 
-export async function getUser (req, _res, next) {
+export async function getUser(req, _res, next) {
   const user = getUserFromToken(req)
   if (user) {
     req.user = user.netid
@@ -13,7 +13,7 @@ export async function getUser (req, _res, next) {
   next()
 }
 
-export async function requireUser (req, res, next) {
+export async function requireUser(req, res, next) {
   const user = getUserFromToken(req)
   if (!user) {
     res.set('HX-Refresh', 'true') // Refresh the page to give the user a change to login again
@@ -38,16 +38,16 @@ export async function loginUser(req, res) {
 
   if (password === APP_CONFIG.adminPassword) {
     sqlite.createUserSession(id, token, true)
-    res.cookie("token", token, COOKIE_SETTINGS)
+    res.cookie('token', token, COOKIE_SETTINGS)
     return res.redirect('/')
   } else if (password === APP_CONFIG.userPassword) {
     sqlite.createUserSession(id, token, false)
-    res.cookie("token", token, COOKIE_SETTINGS)
+    res.cookie('token', token, COOKIE_SETTINGS)
     return res.redirect('/')
   }
 
   res.status(401)
-  res.send("BAD PASSWORD")
+  res.send('BAD PASSWORD')
 }
 
 function getToken(req) {
@@ -69,4 +69,3 @@ async function getRandomKey() {
     })
   })
 }
-
