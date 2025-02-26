@@ -32,9 +32,11 @@ const app = express()
 nunjucks
   .configure('templates', { express: app })
   .addGlobal('GOOGLE_CLIENT_ID', process.env.GOOGLE_CLIENT_ID)
+
 app.set('views', '/templates')
 app.use('/htmx', express.static('node_modules/htmx.org/dist', { maxAge: _30_DAYS_IN_MS }))
 app.use('/favicon.ico', express.static('src/static/favicon.ico', { maxAge: _30_DAYS_IN_MS }))
+app.use('/static/global.css', express.static('src/static/global.css', { maxAge: _30_DAYS_IN_MS }))
 
 app.use(express.urlencoded({ extended: false }))
 app.use('/', router)
