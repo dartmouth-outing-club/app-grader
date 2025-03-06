@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon -e js,njk,css src/server.js",
     "format": "eslint src --fix",
+    "deploy": "ssh node@doc && cd app-grader && git pull && pm2 restart app-grader",
+    "download-db": "rm -f ./app-grader.db* && ssh node@doc 'sqlite3 app-grader/app-grader.db .dump' | sqlite3 app-grader.db",
     "reset-db": "rm ./app-grader.db* && npm run init-db",
     "init-db": "node ./scripts/init-db.js",
     "generate-env-vars": "node ./scripts/generate-env-vars.js",
