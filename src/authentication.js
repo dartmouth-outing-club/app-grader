@@ -15,7 +15,7 @@ export async function getUser(req, _res, next) {
 
 export async function requireAdmin(req, res, next) {
   const user = getUserFromToken(req)
-  if (!user && !user.is_admin) {
+  if (!user || !user.is_admin) {
     res.set('HX-Refresh', 'true') // Refresh the page to give the user a change to login again
     return res.sendStatus(401)
   }
