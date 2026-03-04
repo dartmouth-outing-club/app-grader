@@ -8,14 +8,14 @@ const questions = [INTROSPECTION, REFLECTION, MENTORSHIP, LEADERSHIP]
 
 export function renderApplication(res, application) {
   // If it came back empty, that means there's no applications
-  const { applicationId, fields, secondsRemaining } = application
+  const { applicationId, fields, secondsRemaining, additional_data } = application
   if (!applicationId) return res.send('<div>Nothing to grade right now!</div>')
 
   const leader_app = isLeaderApp(fields)
   const croo_app = isCrooApp(fields)
   const timeRemaining = getTimeRemaining(secondsRemaining)
 
-  res.render('application.njk', { fields, timeRemaining, questions, leader_app, croo_app })
+  res.render('application.njk', { fields, timeRemaining, questions, leader_app, croo_app, additional_data })
 }
 
 export function renderSecondsSpan(res, secondsRemaining) {

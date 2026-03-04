@@ -1,13 +1,34 @@
 {
   "userPassword": "user",
   "adminPassword": "admin",
-  "questions": [
-    "What motivates you to become a Trips Volunteer, and what approach would you bring to it? In your answer, feel free to touch on your own transition to Dartmouth or any other perspectives that will guide your interactions with incoming students from all backgrounds.",
-    "First-Year Trips presents moments of challenge for both incoming students and leaders. Tell us about a time you faced a challenge or dealt with an unexpected situation. How did you handle it? What did you learn from this experience and/or what would you do differently in the future?",
-    "Talk about a community (not necessarily at Dartmouth) that you feel a part of. What makes you feel like you belong, and what role do you play there? How have you helped others find community at Dartmouth or elsewhere?",
-    "Tell us about a time you acted as a peer leader in any way (need not be formal). What actions did you take, and what effects did they have? How do you plan to approach leading a group of 8-10 incoming students (who are also your peers) with a co-Trip Leader?",
-    "Talk about something you have accomplished with a group or team. What strengths did you bring to that group or team, and in what ways did you cooperate? How would that inform how you collaborate with others on First-Year Trips?",
-    "Is there anything else you feel like your application would be incomplete without? Please only use this space to write something you haven’t previously mentioned! (Optional)"
+  "skipRows": "3",
+  "questionsStartColumn": "AQ",
+  "netIdColumn": "DL",
+  "graders": [],
+  "additionalData": [
+    {
+      "key": "Previous Trips Experience?",
+      "column": "AM"
+    }
   ],
-  "graders": []
+  "questions": [
+    {
+      "text": "What motivates you to become a Trips Volunteer, and what approach would you bring to this role? In your answer, feel free to touch on your own transition to Dartmouth or any other perspectives that will guide your interactions with incoming students from all backgrounds."
+    },
+    {
+      "text": "First-Year Trips presents moments of challenge for both incoming students and leaders. Tell us about a time you faced a challenge or dealt with an unexpected situation. How did you handle it? What did you learn from this experience and/or what would you do differently in the future?"
+    },
+    {
+      "text": "The success of First-Year Trips relies on creating inclusive spaces where all trippees and volunteers feel welcome and supported. Talk about a community (not necessarily at Dartmouth) that you feel a part of. What makes you feel like you belong, and what role do you play there? How have you helped others find community at Dartmouth or elsewhere?"
+    },
+    {
+      "text": "For Trip Leader applicants: Tell us about a time you acted as a peer leader in any way (need not be formal). What actions did you take, and what effects did they have? How do you plan to approach leading a group of 6-10 incoming students (who are also your peers) with a co-Trip Leader?"
+    },
+    {
+      "text": "For Crooling applicants: Talk about something you have accomplished with a group or team. What strengths did you bring to that group or team, and in what ways did you cooperate? How would that inform how you collaborate with others as a Crooling?"
+    },
+    {
+      "text": "Is there anything else you feel like your application would be incomplete without? Please only use this space to write something you haven’t previously mentioned! (Optional)"
+    }
+  ]
 }

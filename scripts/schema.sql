@@ -5,7 +5,8 @@ CREATE TABLE users (
 
 CREATE TABLE applications (
     id TEXT PRIMARY KEY,
-    application_json TEXT
+    application_json TEXT,
+    additional_data TEXT
 );
 
 CREATE TABLE locks (

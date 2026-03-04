@@ -73,8 +73,11 @@ function checkoutRandomApp(user) {
       FROM grades
       GROUP BY application_id
     ) as grades_count on id = grades_count.application_id
-    WHERE num_grades < 3 AND (expire_time IS NULL or expire_time < ?) AND has_graded = 0
-    ORDER BY RANDOM()
+    WHERE
+      num_grades < 3
+      AND (expire_time IS NULL or expire_time < ?)
+      AND has_graded = 0
+    ORDER BY num_grades, RANDOM()
   `)
     .get(user, now.getTime())
 
@@ -142,13 +145,13 @@ export function getApplicationForUser(user) {
   const { applicationId, expireTime } = getLockedAppOrCheckoutRandom(user)
   if (!applicationId) return {}
 
-  const applicationJson = db
-    .prepare('SELECT application_json FROM applications WHERE id = ?')
+  const application = db
+    .prepare('SELECT application_json, additional_data FROM applications WHERE id = ?')
     .get(applicationId)
-    .application_json
 
   return {
-    fields: createFieldsFromResponses(JSON.parse(applicationJson)),
+    fields: createFieldsFromResponses(JSON.parse(application.application_json)),
+    additional_data: JSON.parse(application.additional_data),
     applicationId,
     secondsRemaining: getSecondsRemaining(expireTime)
   }
@@ -164,10 +167,13 @@ export function loadApplications(applications) {
   return applications.map((application) => {
     const id = application.applicationId
     const applicationJson = JSON.stringify(application.responses)
+    const additional_data = JSON.stringify(application.additional_data)
     return db.prepare(`
-        INSERT INTO applications (id, application_json) VALUES (?, ?)
-        ON CONFLICT (id) DO UPDATE SET application_json=excluded.application_json
-      `).run(id, applicationJson)
+      INSERT INTO applications (id, application_json, additional_data) VALUES (?, ?, ?)
+      ON CONFLICT (id) DO UPDATE SET
+        application_json=excluded.application_json,
+        additional_data=excluded.additional_data
+    `).run(id, applicationJson, additional_data)
   })
 }
 

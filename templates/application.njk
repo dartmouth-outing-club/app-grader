@@ -14,6 +14,11 @@ You have {% include 'seconds-span.njk' %} left to view the application.
     <p class="no-response">[No response]
     {% endif %}
   {% endfor %}
+
+  {% for datum in additional_data %}
+    <h3>{{ datum.key }}</h3>
+    <p>{{ datum.value }}</p>
+  {% endfor %}
 </div>
 
 <h2>Grading</h2>
